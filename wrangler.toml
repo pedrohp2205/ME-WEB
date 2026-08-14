@@ -1,0 +1,6 @@
+# Configuração do projeto no Cloudflare Pages.
+# `pages_build_output_dir` faz o Pages (e o `wrangler pages deploy`) publicarem
+# a pasta gerada pelo `npm run build`.
+name = "me-web"
+pages_build_output_dir = "dist"
+compatibility_date = "2025-08-14"

@@ -1,0 +1,4 @@
+# SPA fallback: o roteamento é client-side (BrowserRouter), então qualquer rota
+# desconhecida deve devolver o index.html com status 200 — sem isso, dar F5 em
+# /agenda, /consultas/:id, /oauth2/redirect etc. resulta em 404 do Pages.
+/*    /index.html   200
