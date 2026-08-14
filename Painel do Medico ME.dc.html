@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; padding:0; background:#FFFDFB; }
+  * { box-sizing: border-box; }
+  a { color:#EB5057; text-decoration:none; }
+  a:hover { color:#C23A45; }
+  input, textarea, select, button { font-family: Poppins, sans-serif; }
+  :focus-visible { outline: 2px solid #EB5057; outline-offset: 2px; }
+  ::placeholder { color:#B7ADA6; }
+  @keyframes sh { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+  @keyframes up { from { opacity:0; transform: translateY(8px) } to { opacity:1; transform:none } }
+  @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:.45 } }
+  @keyframes spin { to { transform: rotate(360deg) } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important } }
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#FFFDFB;color:#211E1C;font-family:Poppins,sans-serif;-webkit-font-smoothing:antialiased">
+
+  <sc-if value="{{ vAuth }}" hint-placeholder-val="{{ true }}">
+    <div style="min-height:100vh;display:grid;grid-template-columns:{{ authCols }};align-items:stretch">
+      <div style="display:flex;align-items:center;justify-content:center;padding:32px 20px">
+        <div style="width:100%;max-width:400px;animation:up .3s ease-out">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:36px">
+            <div style="width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#EB5057,#F7826E);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;letter-spacing:-.5px">ME</div>
+            <div style="font-size:20px;font-weight:600;letter-spacing:-.3px">ME <span style="color:#79716B;font-weight:500">Médico</span></div>
+          </div>
+
+          <sc-if value="{{ vLogin }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <h1 style="margin:0 0 8px;font-size:28px;font-weight:600;letter-spacing:-.6px">Entrar no painel</h1>
+              <p style="margin:0 0 28px;color:#79716B;font-size:14px;line-height:1.6">Acesse para gerenciar sua agenda, atender e emitir documentos assinados.</p>
+              <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">E-mail</label>
+              <input value="{{ email }}" onChange="{{ hEmail }}" type="email" placeholder="voce@clinica.com.br" style="width:100%;height:48px;padding:0 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;color:#211E1C;outline:none;transition:border-color .18s" style-focus="border-color:#EB5057;background:#fff" />
+              <div style="height:18px;font-size:12px;color:#DC2626;padding:3px 4px">{{ errEmail }}</div>
+              <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Senha</label>
+              <input value="{{ senha }}" onChange="{{ hSenha }}" type="password" placeholder="••••••••" style="width:100%;height:48px;padding:0 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;color:#211E1C;outline:none;transition:border-color .18s" style-focus="border-color:#EB5057;background:#fff" />
+              <div style="height:18px;font-size:12px;color:#DC2626;padding:3px 4px">{{ errSenha }}</div>
+              <button onClick="{{ hLogin }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:background .18s,transform .18s;margin-top:6px" style-hover="background:#C23A45" style-active="transform:scale(.985)">{{ loginBtn }}</button>
+              <div style="display:flex;justify-content:center;margin:14px 0 18px"><button onClick="{{ hForgot }}" style="border:none;background:none;color:#79716B;font-size:13px;cursor:pointer;padding:6px 10px;border-radius:999px" style-hover="color:#211E1C">Esqueci minha senha</button></div>
+              <div style="display:flex;align-items:center;gap:12px;color:#B7ADA6;font-size:12px"><div style="flex:1;height:1px;background:#EFE8E3"></div>ou<div style="flex:1;height:1px;background:#EFE8E3"></div></div>
+              <button onClick="{{ hGoogle }}" style="width:100%;height:50px;margin-top:18px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#211E1C;font-size:14px;font-weight:500;cursor:pointer;transition:background .18s" style-hover="background:#FBF6F3">Entrar com Google</button>
+              <p style="margin:28px 0 0;font-size:12px;color:#B7ADA6;line-height:1.6">Protótipo de navegação — dados fictícios em memória. Use qualquer e-mail válido e uma senha de 4+ caracteres.</p>
+              <div style="margin-top:14px"><button onClick="{{ goPublic }}" style="border:none;background:none;color:#79716B;font-size:12px;text-decoration:underline;cursor:pointer;padding:4px 0">Verificar um documento pelo código</button></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ v2fa }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <h1 style="margin:0 0 8px;font-size:28px;font-weight:600;letter-spacing:-.6px">Verificação em duas etapas</h1>
+              <p style="margin:0 0 28px;color:#79716B;font-size:14px;line-height:1.6">Digite o código de 6 dígitos do seu aplicativo autenticador.</p>
+              <input value="{{ code }}" onChange="{{ hCode }}" inputMode="numeric" placeholder="000000" style="width:100%;height:64px;padding:0 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:28px;font-weight:600;letter-spacing:12px;text-align:center;color:#211E1C;outline:none" style-focus="border-color:#EB5057;background:#fff" />
+              <div style="height:20px;font-size:12px;color:#DC2626;padding:4px">{{ errCode }}</div>
+              <button onClick="{{ hVerify }}" style="width:100%;height:50px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:background .18s" style-hover="background:#C23A45">{{ verifyBtn }}</button>
+              <div style="display:flex;justify-content:space-between;margin-top:16px">
+                <button onClick="{{ hBackLogin }}" style="border:none;background:none;color:#79716B;font-size:13px;cursor:pointer;padding:6px 0">Voltar</button>
+                <button onClick="{{ hResend }}" style="border:none;background:none;color:#EB5057;font-size:13px;font-weight:500;cursor:pointer;padding:6px 0">Reenviar código</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+      <div style="display:{{ authArtDisplay }};background:linear-gradient(150deg,#FFECEA,#FFFDFB 55%,#E5F4F0);padding:56px;flex-direction:column;justify-content:flex-end;border-left:1px solid #EFE8E3">
+        <div style="max-width:420px">
+          <div style="display:inline-flex;height:28px;align-items:center;padding:0 12px;border-radius:999px;background:#fff;border:1px solid #EFE8E3;font-size:12px;font-weight:500;color:#0E7E70;margin-bottom:20px">Dados do paciente, sob controle do paciente</div>
+          <h2 style="margin:0 0 14px;font-size:32px;font-weight:600;letter-spacing:-.8px;line-height:1.25;text-wrap:pretty">Agenda, atendimento e documentos assinados em um só lugar.</h2>
+          <p style="margin:0;color:#79716B;font-size:15px;line-height:1.7;text-wrap:pretty">Receitas, atestados e pedidos de exame com assinatura digital ICP-Brasil e verificação pública por código.</p>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ vPublic }}" hint-placeholder-val="{{ false }}">
+    <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:48px 20px;background:#FBF6F3">
+      <div style="width:100%;max-width:560px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px">
+          <div style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#EB5057,#F7826E);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">ME</div>
+          <div style="font-size:15px;font-weight:600">Verificação pública de documento</div>
+        </div>
+        <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:24px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+          <p style="margin:0 0 16px;color:#79716B;font-size:13px;line-height:1.6">Informe o código impresso no rodapé do documento. Nenhum dado clínico é exibido nesta página.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <input value="{{ verifCode }}" onChange="{{ hVerifCode }}" placeholder="ME-0000-0000" style="flex:1;min-width:180px;height:48px;padding:0 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;letter-spacing:1px;outline:none" style-focus="border-color:#EB5057;background:#fff" />
+            <button onClick="{{ doVerify }}" style="height:48px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Verificar</button>
+          </div>
+          <sc-if value="{{ verifLoading }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:20px;height:96px;border-radius:16px;background:linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9);background-size:200% 100%;animation:sh 1.2s infinite"></div>
+          </sc-if>
+          <sc-if value="{{ verifOk }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:20px;border:1px solid #EFE8E3;border-radius:16px;overflow:hidden;animation:up .25s ease-out">
+              <div style="padding:14px 18px;background:{{ verif.headBg }};color:{{ verif.headFg }};font-size:14px;font-weight:600">{{ verif.headline }}</div>
+              <div style="padding:18px;display:grid;gap:12px">
+                <sc-for list="{{ verif.rows }}" as="r" hint-placeholder-count="4">
+                  <div style="display:flex;justify-content:space-between;gap:16px;font-size:13px"><span style="color:#79716B">{{ r.k }}</span><span style="font-weight:500;text-align:right">{{ r.v }}</span></div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ verifFail }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:20px;padding:16px 18px;border-radius:16px;background:#FEECEC;color:#DC2626;font-size:13px;line-height:1.6">Código não encontrado. Confira os caracteres e tente novamente.</div>
+          </sc-if>
+        </div>
+        <div style="margin-top:20px;display:flex;justify-content:center"><button onClick="{{ backFromPublic }}" style="border:none;background:none;color:#79716B;font-size:13px;cursor:pointer;padding:8px 12px" style-hover="color:#211E1C">{{ backFromPublicLabel }}</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ vApp }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <aside style="position:fixed;top:0;left:0;bottom:0;width:{{ sbW }}px;background:#fff;border-right:1px solid #EFE8E3;z-index:60;display:flex;flex-direction:column;transform:{{ sbT }};transition:transform .22s ease,width .22s ease;padding:18px 14px">
+        <div style="display:flex;align-items:center;gap:10px;height:44px;padding:0 6px;margin-bottom:22px">
+          <div style="width:36px;height:36px;flex:none;border-radius:12px;background:linear-gradient(135deg,#EB5057,#F7826E);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">ME</div>
+          <div style="display:{{ labelDisplay }};font-size:15px;font-weight:600;white-space:nowrap">ME <span style="color:#79716B;font-weight:500">Médico</span></div>
+        </div>
+        <nav style="display:flex;flex-direction:column;gap:4px">
+          <sc-for list="{{ nav }}" as="it" hint-placeholder-count="7">
+            <button onClick="{{ it.go }}" title="{{ it.name }}" style="display:flex;align-items:center;gap:12px;height:46px;padding:0 12px;border:none;border-radius:999px;background:{{ it.bg }};color:{{ it.fg }};font-size:14px;font-weight:{{ it.fw }};cursor:pointer;transition:background .18s;text-align:left;white-space:nowrap;overflow:hidden" style-hover="background:#FBF6F3">
+              <span style="width:20px;height:20px;flex:none;display:flex;align-items:center;justify-content:center">{{ it.icon }}</span>
+              <span style="display:{{ labelDisplay }}">{{ it.name }}</span>
+              <span style="display:{{ it.badgeDisplay }};margin-left:auto;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:#FFECEA;color:#EB5057;font-size:11px;font-weight:600;align-items:center;justify-content:center">{{ it.badge }}</span>
+            </button>
+          </sc-for>
+        </nav>
+        <div style="margin-top:auto;display:{{ labelDisplay }};padding:14px;border-radius:16px;background:#FBF6F3;font-size:12px;color:#79716B;line-height:1.6">Protótipo navegável · dados fictícios</div>
+      </aside>
+
+      <div style="display:{{ overlayDisplay }};position:fixed;inset:0;background:rgba(33,30,28,.34);z-index:55" onClick="{{ closeSidebar }}"></div>
+
+      <div style="margin-left:{{ mainML }}px;transition:margin-left .22s ease;min-height:100vh;padding-bottom:{{ bottomPad }}px">
+        <header style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;height:68px;padding:0 {{ mainPad }};background:#FFFDFB">
+          <button onClick="{{ toggleNav }}" aria-label="Alternar navegação" style="width:40px;height:40px;flex:none;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#211E1C;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:#FBF6F3">{{ menuIcon }}</button>
+          <div style="flex:1;max-width:420px;display:{{ searchDisplay }}">
+            <input value="{{ search }}" onChange="{{ hSearch }}" onKeyDown="{{ hSearchKey }}" placeholder="Buscar paciente ou documento" style="width:100%;height:40px;padding:0 16px;border:1px solid #EFE8E3;border-radius:999px;background:#FBF6F3;font-size:13px;outline:none" style-focus="border-color:#EB5057;background:#fff" />
+          </div>
+          <div style="flex:1"></div>
+          <button onClick="{{ goDocumentos }}" aria-label="Notificações" style="position:relative;width:40px;height:40px;flex:none;border:1px solid #EFE8E3;border-radius:999px;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#211E1C" style-hover="background:#FBF6F3">
+            {{ bellIcon }}
+            <span style="position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:999px;background:#EB5057"></span>
+          </button>
+          <button onClick="{{ goPerfil }}" style="display:flex;align-items:center;gap:10px;height:40px;padding:0 6px 0 0;border:1px solid #EFE8E3;border-radius:999px;background:#fff;cursor:pointer;padding-left:4px" style-hover="background:#FBF6F3">
+            <span style="width:32px;height:32px;border-radius:999px;background:linear-gradient(135deg,#EB5057,#F7826E);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">MA</span>
+            <span style="display:{{ labelDisplayTop }};font-size:13px;font-weight:500;padding-right:10px;white-space:nowrap">{{ doctorShort }}</span>
+          </button>
+        </header>
+
+        <main style="padding:{{ mainPad }};max-width:1280px;margin:0 auto">
+          <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;gap:16px">
+              <div style="height:30px;width:240px;border-radius:12px;background:linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9);background-size:200% 100%;animation:sh 1.2s infinite"></div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+                <div style="height:110px;border-radius:24px;background:linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9);background-size:200% 100%;animation:sh 1.2s infinite"></div>
+                <div style="height:110px;border-radius:24px;background:linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9);background-size:200% 100%;animation:sh 1.2s infinite"></div>
+                <div style="height:110px;border-radius:24px;background:linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9);background-size:200% 100%;animation:sh 1.2s infinite"></div>
+              </div>
+              <div style="height:280px;border-radius:24px;background:linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9);background-size:200% 100%;animation:sh 1.2s infinite"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rInicio }}" hint-placeholder-val="{{ true }}">
+            <div style="animation:up .25s ease-out">
+              <div style="margin-bottom:24px">
+                <div style="font-size:13px;color:#79716B;font-weight:500">{{ todayLabel }}</div>
+                <h1 style="margin:6px 0 0;font-size:30px;font-weight:600;letter-spacing:-.7px">{{ greeting }}</h1>
+              </div>
+
+              <sc-if value="{{ emitenteMissing }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:18px 20px;border-radius:24px;background:#FFECEA;border:1px solid #F8D7D3;margin-bottom:22px">
+                  <div style="flex:1;min-width:220px">
+                    <div style="font-size:14px;font-weight:600;margin-bottom:4px">Complete seus dados de emitente</div>
+                    <div style="font-size:13px;color:#79716B;line-height:1.6">Endereço profissional e telefone são obrigatórios para emitir receita de controle especial.</div>
+                  </div>
+                  <button onClick="{{ goPerfil }}" style="height:42px;padding:0 20px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Completar perfil</button>
+                </div>
+              </sc-if>
+
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:22px">
+                <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+                  <button onClick="{{ k.go }}" style="text-align:left;padding:20px;border:1px solid #EFE8E3;border-radius:24px;background:#fff;box-shadow:0 8px 24px rgba(33,30,28,0.08);cursor:pointer;transition:transform .18s,box-shadow .18s" style-hover="transform:translateY(-2px);box-shadow:0 14px 30px rgba(33,30,28,0.1)">
+                    <div style="font-size:12px;font-weight:500;color:#79716B">{{ k.label }}</div>
+                    <div style="display:flex;align-items:baseline;gap:8px;margin-top:8px">
+                      <div style="font-size:30px;font-weight:600;letter-spacing:-1px;color:{{ k.color }}">{{ k.value }}</div>
+                      <div style="font-size:12px;color:#79716B">{{ k.unit }}</div>
+                    </div>
+                  </button>
+                </sc-for>
+              </div>
+
+              <div style="display:grid;grid-template-columns:{{ dashCols }};gap:16px;align-items:start">
+                <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;box-shadow:0 8px 24px rgba(33,30,28,0.08);overflow:hidden">
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 22px 14px">
+                    <h2 style="margin:0;font-size:16px;font-weight:600">Próximas consultas</h2>
+                    <button onClick="{{ goAgenda }}" style="border:none;background:none;color:#EB5057;font-size:13px;font-weight:500;cursor:pointer;padding:6px 8px;border-radius:999px" style-hover="background:#FFECEA">Ver agenda</button>
+                  </div>
+                  <sc-for list="{{ upcoming }}" as="a" hint-placeholder-count="3">
+                    <button onClick="{{ a.open }}" style="width:100%;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:14px 22px;border:none;border-top:1px solid #EFE8E3;background:#fff;cursor:pointer;text-align:left;transition:background .18s" style-hover="background:#FBF6F3">
+                      <span style="width:40px;height:40px;border-radius:999px;background:#FBF6F3;color:#211E1C;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{ a.iniciais }}</span>
+                      <span style="min-width:0">
+                        <span style="display:block;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ a.nome }}</span>
+                        <span style="display:block;font-size:12px;color:#79716B;margin-top:2px">{{ a.quando }} · {{ a.tipo }}</span>
+                      </span>
+                      <span style="display:inline-flex;align-items:center;height:26px;padding:0 11px;border-radius:999px;font-size:11px;font-weight:500;background:{{ a.chipBg }};color:{{ a.chipFg }};white-space:nowrap">{{ a.status }}</span>
+                    </button>
+                  </sc-for>
+                  <sc-if value="{{ noUpcoming }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:32px 22px;text-align:center;border-top:1px solid #EFE8E3">
+                      <div style="width:52px;height:52px;margin:0 auto 12px;border-radius:999px;background:#FBF6F3"></div>
+                      <div style="font-size:14px;font-weight:500">Nenhuma consulta à frente</div>
+                      <div style="font-size:13px;color:#79716B;margin-top:4px">Abra suas janelas de atendimento para receber agendamentos.</div>
+                    </div>
+                  </sc-if>
+                </div>
+
+                <div style="display:grid;gap:16px">
+                  <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                    <h2 style="margin:0 0 4px;font-size:16px;font-weight:600">Aguardando confirmação</h2>
+                    <p style="margin:0 0 14px;font-size:13px;color:#79716B;line-height:1.6">Sem confirmação do paciente não é possível registrar dados clínicos.</p>
+                    <div style="display:grid;gap:10px">
+                      <sc-for list="{{ pending }}" as="p" hint-placeholder-count="2">
+                        <button onClick="{{ p.open }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;cursor:pointer;text-align:left" style-hover="border-color:#EB5057">
+                          <span style="font-size:13px;font-weight:500">{{ p.nome }}</span>
+                          <span style="font-size:12px;color:#79716B;white-space:nowrap">{{ p.quando }}</span>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                    <h2 style="margin:0 0 14px;font-size:16px;font-weight:600">Aguardando assinatura</h2>
+                    <div style="display:grid;gap:10px">
+                      <sc-for list="{{ toSign }}" as="d" hint-placeholder-count="2">
+                        <button onClick="{{ d.open }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;cursor:pointer;text-align:left" style-hover="border-color:#EB5057">
+                          <span style="min-width:0">
+                            <span style="display:block;font-size:13px;font-weight:500">{{ d.tipo }}</span>
+                            <span style="display:block;font-size:12px;color:#79716B;margin-top:2px">{{ d.paciente }}</span>
+                          </span>
+                          <span style="font-size:12px;color:#F59E0B;font-weight:500;white-space:nowrap">Assinar</span>
+                        </button>
+                      </sc-for>
+                    </div>
+                    <sc-if value="{{ noToSign }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size:13px;color:#79716B;line-height:1.6">Nada pendente. Todos os documentos estão assinados.</div>
+                    </sc-if>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rAgenda }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:up .25s ease-out">
+              <h1 style="margin:0 0 4px;font-size:26px;font-weight:600;letter-spacing:-.6px">Agenda</h1>
+              <p style="margin:0 0 20px;font-size:14px;color:#79716B">Consultas da semana, janelas de atendimento e bloqueios.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+                <sc-for list="{{ agTabs }}" as="t" hint-placeholder-count="3">
+                  <button onClick="{{ t.go }}" style="height:40px;padding:0 18px;border:1px solid {{ t.bd }};border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};font-size:13px;font-weight:500;cursor:pointer;transition:all .18s">{{ t.label }}</button>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ agIsConsultas }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;grid-template-columns:{{ weekCols }};gap:12px">
+                  <sc-for list="{{ agWeek }}" as="d" hint-placeholder-count="7">
+                    <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:12px;min-height:120px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                      <div style="display:flex;align-items:center;gap:8px;padding:6px 8px 12px">
+                        <span style="display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;background:{{ d.headBg }};color:{{ d.headFg }};font-size:12px;font-weight:600">{{ d.num }}</span>
+                        <span style="font-size:12px;font-weight:500;color:#79716B">{{ d.label }}</span>
+                      </div>
+                      <div style="display:grid;gap:8px">
+                        <sc-for list="{{ d.appts }}" as="a" hint-placeholder-count="1">
+                          <button onClick="{{ a.open }}" style="display:grid;gap:3px;padding:10px 12px;border:1px solid #EFE8E3;border-left:3px solid {{ a.barra }};border-radius:14px;background:#FBF6F3;cursor:pointer;text-align:left;transition:all .18s" style-hover="background:#fff;border-color:#EB5057">
+                            <span style="font-size:12px;font-weight:600">{{ a.hora }}</span>
+                            <span style="font-size:12px;color:#211E1C;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.nome }}</span>
+                            <span style="font-size:11px;color:{{ a.chipFg }};font-weight:500">{{ a.status }} · {{ a.tipo }}</span>
+                          </button>
+                        </sc-for>
+                        <sc-if value="{{ d.empty }}" hint-placeholder-val="{{ false }}">
+                          <div style="padding:10px 12px;border:1px dashed #EFE8E3;border-radius:14px;font-size:12px;color:#B7ADA6">Livre</div>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ agIsHorarios }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;gap:16px">
+                  <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                    <h2 style="margin:0 0 16px;font-size:16px;font-weight:600">Nova janela semanal</h2>
+                    <div style="display:grid;grid-template-columns:{{ form4 }};gap:12px;align-items:end">
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Dia da semana</label>
+                        <select value="{{ winDow }}" onChange="{{ hWinDow }}" style="width:100%;height:46px;padding:0 12px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none">
+                          <option value="1">Segunda</option><option value="2">Terça</option><option value="3">Quarta</option><option value="4">Quinta</option><option value="5">Sexta</option><option value="6">Sábado</option><option value="0">Domingo</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Início</label>
+                        <input value="{{ winIni }}" onChange="{{ hWinIni }}" type="time" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" />
+                      </div>
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Fim</label>
+                        <input value="{{ winFim }}" onChange="{{ hWinFim }}" type="time" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" />
+                      </div>
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Slot (min)</label>
+                        <input value="{{ winSlot }}" onChange="{{ hWinSlot }}" inputMode="numeric" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" />
+                      </div>
+                    </div>
+                    <button onClick="{{ addWin }}" style="margin-top:16px;height:46px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Adicionar janela</button>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                    <h2 style="margin:0 0 16px;font-size:16px;font-weight:600">Janelas configuradas</h2>
+                    <div style="display:grid;gap:10px">
+                      <sc-for list="{{ agWins }}" as="w" hint-placeholder-count="4">
+                        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3">
+                          <span style="min-width:74px;font-size:13px;font-weight:600">{{ w.dia }}</span>
+                          <span style="font-size:13px">{{ w.faixa }}</span>
+                          <span style="font-size:12px;color:#79716B">{{ w.slot }} · {{ w.qtd }}</span>
+                          <button onClick="{{ w.del }}" style="margin-left:auto;height:34px;padding:0 14px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#DC2626;font-size:12px;font-weight:500;cursor:pointer" style-hover="background:#FEECEC">Remover</button>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <sc-if value="{{ agNoWins }}" hint-placeholder-val="{{ false }}">
+                      <div style="padding:26px;text-align:center;border:1px dashed #EFE8E3;border-radius:16px;font-size:13px;color:#79716B">Nenhuma janela configurada. Sem janelas, os pacientes não veem horários livres.</div>
+                    </sc-if>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                    <h2 style="margin:0 0 4px;font-size:16px;font-weight:600">Horários livres (como o paciente vê)</h2>
+                    <p style="margin:0 0 14px;font-size:13px;color:#79716B">Janelas menos bloqueios e consultas já agendadas.</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+                      <sc-for list="{{ agSlotDays }}" as="d" hint-placeholder-count="7">
+                        <button onClick="{{ d.go }}" style="height:36px;padding:0 14px;border:1px solid {{ d.bd }};border-radius:999px;background:{{ d.bg }};color:{{ d.fg }};font-size:12px;font-weight:500;cursor:pointer">{{ d.label }}</button>
+                      </sc-for>
+                    </div>
+                    <div style="font-size:12px;color:#79716B;margin-bottom:10px">{{ agSlotLabel }}</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                      <sc-for list="{{ agSlots }}" as="s" hint-placeholder-count="6">
+                        <span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#E5F4F0;color:#0E7E70;font-size:13px;font-weight:500">{{ s.t }}</span>
+                      </sc-for>
+                    </div>
+                    <sc-if value="{{ agNoSlots }}" hint-placeholder-val="{{ false }}">
+                      <div style="padding:20px;border:1px dashed #EFE8E3;border-radius:16px;font-size:13px;color:#79716B">Nenhum horário livre neste dia.</div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ agIsBlocos }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;gap:16px">
+                  <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                    <h2 style="margin:0 0 16px;font-size:16px;font-weight:600">Novo bloqueio</h2>
+                    <div style="display:grid;grid-template-columns:{{ form4 }};gap:12px;align-items:end">
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Data</label>
+                        <input value="{{ blkDate }}" onChange="{{ hBlkDate }}" type="date" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" />
+                      </div>
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Início</label>
+                        <input value="{{ blkIni }}" onChange="{{ hBlkIni }}" type="time" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" />
+                      </div>
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Fim</label>
+                        <input value="{{ blkFim }}" onChange="{{ hBlkFim }}" type="time" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" />
+                      </div>
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Motivo</label>
+                        <input value="{{ blkMotivo }}" onChange="{{ hBlkMotivo }}" placeholder="Almoço, congresso…" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" />
+                      </div>
+                    </div>
+                    <button onClick="{{ addBlk }}" style="margin-top:16px;height:46px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Criar bloqueio</button>
+                  </div>
+                  <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                    <h2 style="margin:0 0 16px;font-size:16px;font-weight:600">Bloqueios</h2>
+                    <div style="display:grid;gap:10px">
+                      <sc-for list="{{ agBlocos }}" as="b" hint-placeholder-count="2">
+                        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3">
+                          <span style="min-width:92px;font-size:13px;font-weight:600">{{ b.data }}</span>
+                          <span style="font-size:13px">{{ b.faixa }}</span>
+                          <span style="font-size:12px;color:#79716B">{{ b.motivo }}</span>
+                          <button onClick="{{ b.del }}" style="margin-left:auto;height:34px;padding:0 14px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#DC2626;font-size:12px;font-weight:500;cursor:pointer" style-hover="background:#FEECEC">Remover</button>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <sc-if value="{{ agNoBlocos }}" hint-placeholder-val="{{ false }}">
+                      <div style="padding:26px;text-align:center;border:1px dashed #EFE8E3;border-radius:16px;font-size:13px;color:#79716B">Nenhum bloqueio criado.</div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rConsultas }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:up .25s ease-out">
+              <h1 style="margin:0 0 4px;font-size:26px;font-weight:600;letter-spacing:-.6px">Consultas</h1>
+              <p style="margin:0 0 20px;font-size:14px;color:#79716B">Todos os atendimentos e seus status de confirmação.</p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px">
+                <sc-for list="{{ csFilters }}" as="f" hint-placeholder-count="4">
+                  <button onClick="{{ f.go }}" style="height:38px;padding:0 16px;border:1px solid {{ f.bd }};border-radius:999px;background:{{ f.bg }};color:{{ f.fg }};font-size:13px;font-weight:500;cursor:pointer">{{ f.f }}</button>
+                </sc-for>
+              </div>
+              <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;box-shadow:0 8px 24px rgba(33,30,28,0.08);overflow:hidden">
+                <sc-for list="{{ csRows }}" as="a" hint-placeholder-count="5">
+                  <button onClick="{{ a.open }}" style="width:100%;display:grid;grid-template-columns:{{ csCols }};gap:10px;align-items:center;padding:16px 20px;border:none;border-bottom:1px solid #EFE8E3;background:#fff;cursor:pointer;text-align:left;transition:background .18s" style-hover="background:#FBF6F3">
+                    <span style="display:flex;align-items:center;gap:12px;min-width:0">
+                      <span style="width:38px;height:38px;flex:none;border-radius:999px;background:#FBF6F3;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">{{ a.iniciais }}</span>
+                      <span style="font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.nome }}</span>
+                    </span>
+                    <span style="font-size:13px;color:#79716B">{{ a.quando }}</span>
+                    <span style="font-size:13px;color:#79716B">{{ a.tipo }}</span>
+                    <span style="display:inline-flex;align-items:center;justify-self:start;height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;background:{{ a.chipBg }};color:{{ a.chipFg }}">{{ a.status }}</span>
+                  </button>
+                </sc-for>
+                <sc-if value="{{ csEmpty }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:40px;text-align:center">
+                    <div style="width:52px;height:52px;margin:0 auto 12px;border-radius:999px;background:#FBF6F3"></div>
+                    <div style="font-size:14px;font-weight:500">Nenhuma consulta neste filtro</div>
+                    <div style="font-size:13px;color:#79716B;margin-top:4px">Ajuste os filtros ou abra novas janelas na agenda.</div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rConsulta }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:up .25s ease-out;display:grid;gap:16px;max-width:920px">
+              <button onClick="{{ cdBack }}" style="justify-self:start;border:none;background:none;color:#79716B;font-size:13px;cursor:pointer;padding:4px 0" style-hover="color:#211E1C">← Voltar para consultas</button>
+              <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px">
+                  <span style="width:56px;height:56px;border-radius:999px;background:linear-gradient(135deg,#EB5057,#F7826E);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600">{{ cd.iniciais }}</span>
+                  <span style="min-width:0;flex:1">
+                    <span style="display:block;font-size:20px;font-weight:600;letter-spacing:-.4px">{{ cd.nome }}</span>
+                    <span style="display:block;font-size:13px;color:#79716B;margin-top:3px">{{ cd.info }}</span>
+                  </span>
+                  <span style="display:inline-flex;align-items:center;height:30px;padding:0 14px;border-radius:999px;font-size:12px;font-weight:500;background:{{ cd.chipBg }};color:{{ cd.chipFg }}">{{ cd.status }}</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;padding-top:18px;border-top:1px solid #EFE8E3">
+                  <span style="display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:999px;background:#FBF6F3;font-size:13px;font-weight:500">{{ cd.quando }}</span>
+                  <span style="display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:999px;background:#FBF6F3;font-size:13px;font-weight:500">{{ cd.tipo }}</span>
+                  <sc-if value="{{ cdIsTele }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ cdRoom }}" style="height:32px;padding:0 16px;border:none;border-radius:999px;background:#E5F4F0;color:#0E7E70;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#D3EDE7">Abrir sala</button>
+                  </sc-if>
+                  <sc-if value="{{ cdConfirmed }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:flex;gap:10px;margin-left:auto">
+                      <button onClick="{{ cdConcluir }}" style="height:32px;padding:0 16px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:13px;cursor:pointer" style-hover="background:#FBF6F3">Concluir</button>
+                      <button onClick="{{ cdCancelar }}" style="height:32px;padding:0 16px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#DC2626;font-size:13px;cursor:pointer" style-hover="background:#FEECEC">Cancelar</button>
+                    </span>
+                  </sc-if>
+                </div>
+              </div>
+
+              <sc-if value="{{ cdUnconfirmed }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:20px 22px;border-radius:24px;background:#FEF6E7;border:1px solid #F6E1BC">
+                  <div style="flex:1;min-width:220px">
+                    <div style="font-size:14px;font-weight:600;margin-bottom:4px">Aguardando confirmação do paciente</div>
+                    <div style="font-size:13px;color:#79716B;line-height:1.6">O registro clínico e a emissão de documentos são liberados quando o paciente confirmar a consulta no app.</div>
+                  </div>
+                  <button onClick="{{ cdConfirmar }}" style="height:42px;padding:0 18px;border:1px solid #E4C98F;border-radius:999px;background:#fff;color:#B45309;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FFFBF2">Simular confirmação</button>
+                </div>
+              </sc-if>
+
+              <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08);opacity:{{ cdFormOpacity }}">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:16px">
+                  <h2 style="margin:0;font-size:16px;font-weight:600">Resumo clínico (SOAP)</h2>
+                  <sc-if value="{{ soSigned }}" hint-placeholder-val="{{ false }}">
+                    <span style="display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;background:#E5F4F0;color:#0E7E70;font-size:12px;font-weight:500">Assinado · somente leitura</span>
+                  </sc-if>
+                </div>
+                <div style="display:grid;grid-template-columns:{{ form2 }};gap:14px">
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Subjetivo</label>
+                    <textarea value="{{ soS }}" onChange="{{ hSoS }}" disabled="{{ soLock }}" placeholder="Queixa e história relatadas" style="width:100%;min-height:96px;padding:12px 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;line-height:1.6;color:#211E1C;outline:none;resize:vertical" style-focus="border-color:#EB5057;background:#fff"></textarea>
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Objetivo</label>
+                    <textarea value="{{ soO }}" onChange="{{ hSoO }}" disabled="{{ soLock }}" placeholder="Exame físico e achados" style="width:100%;min-height:96px;padding:12px 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;line-height:1.6;color:#211E1C;outline:none;resize:vertical" style-focus="border-color:#EB5057;background:#fff"></textarea>
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Avaliação</label>
+                    <textarea value="{{ soA }}" onChange="{{ hSoA }}" disabled="{{ soLock }}" placeholder="Hipóteses e diagnóstico" style="width:100%;min-height:96px;padding:12px 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;line-height:1.6;color:#211E1C;outline:none;resize:vertical" style-focus="border-color:#EB5057;background:#fff"></textarea>
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Plano</label>
+                    <textarea value="{{ soP }}" onChange="{{ hSoP }}" disabled="{{ soLock }}" placeholder="Conduta, prescrição e retorno" style="width:100%;min-height:96px;padding:12px 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;line-height:1.6;color:#211E1C;outline:none;resize:vertical" style-focus="border-color:#EB5057;background:#fff"></textarea>
+                  </div>
+                </div>
+                <sc-if value="{{ cdCanEdit }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px">
+                    <button onClick="{{ soSave }}" style="height:44px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Salvar rascunho</button>
+                    <button onClick="{{ soSign }}" style="height:44px;padding:0 22px;border:none;border-radius:999px;background:#211E1C;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#3A3532">Assinar resumo</button>
+                  </div>
+                </sc-if>
+              </div>
+
+              <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
+                  <h2 style="margin:0;font-size:16px;font-weight:600">Documentos desta consulta</h2>
+                  <sc-if value="{{ cdConfirmed }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ cdEmitir }}" style="height:44px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Emitir documento</button>
+                  </sc-if>
+                </div>
+                <div style="display:grid;gap:10px">
+                  <sc-for list="{{ cdDocs }}" as="d" hint-placeholder-count="1">
+                    <button onClick="{{ d.open }}" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;cursor:pointer;text-align:left" style-hover="border-color:#EB5057">
+                      <span style="font-size:13px;font-weight:500">{{ d.tipo }}</span>
+                      <span style="font-size:12px;color:#79716B">{{ d.data }}</span>
+                      <span style="margin-left:auto;display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;background:{{ d.chipBg }};color:{{ d.chipFg }}">{{ d.status }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ cdNoDocs }}" hint-placeholder-val="{{ true }}">
+                  <div style="padding:26px;text-align:center;border:1px dashed #EFE8E3;border-radius:16px;font-size:13px;color:#79716B">Nenhum documento emitido nesta consulta.</div>
+                </sc-if>
+              </div>
+
+              <div style="background:#FBF6F3;border:1px solid #EFE8E3;border-radius:24px;padding:22px">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:8px">
+                  <h2 style="margin:0;font-size:16px;font-weight:600">Histórico clínico do paciente</h2>
+                  <span style="display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;background:{{ cdConsentBg }};color:{{ cdConsentFg }};font-size:12px;font-weight:500">{{ cd.consentLabel }}</span>
+                </div>
+                <sc-if value="{{ cdConsent }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:grid;gap:10px;margin-top:12px">
+                    <div style="padding:14px 16px;border:1px solid #EFE8E3;border-radius:16px;background:#fff;font-size:13px;line-height:1.6">Alergias: nega. Condições: rinite alérgica.</div>
+                    <div style="padding:14px 16px;border:1px solid #EFE8E3;border-radius:16px;background:#fff;font-size:13px;line-height:1.6">Última consulta: quadro gripal, prescrita amoxicilina 500mg.</div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ cdNoConsent }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:12px;padding:20px;border:1px dashed #E3D6CE;border-radius:16px;background:#fff">
+                    <div style="font-size:13px;color:#79716B;line-height:1.6;margin-bottom:14px">O paciente é dono dos seus dados. Sem consentimento ativo, o histórico permanece bloqueado.</div>
+                    <button onClick="{{ cdReqAccess }}" style="height:42px;padding:0 20px;border:none;border-radius:999px;background:#211E1C;color:#fff;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#3A3532">Solicitar acesso</button>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rDocumentos }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:up .25s ease-out">
+              <h1 style="margin:0 0 4px;font-size:26px;font-weight:600;letter-spacing:-.6px">Documentos</h1>
+              <p style="margin:0 0 18px;font-size:14px;color:#79716B">Receitas, atestados e pedidos emitidos por você.</p>
+              <div style="display:grid;gap:10px;margin-bottom:18px">
+                <div style="display:flex;flex-wrap:wrap;gap:8px">
+                  <sc-for list="{{ dtTipos }}" as="t" hint-placeholder-count="6">
+                    <button onClick="{{ t.go }}" style="height:36px;padding:0 14px;border:1px solid {{ t.bd }};border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};font-size:12px;font-weight:500;cursor:pointer">{{ t.t }}</button>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">
+                  <sc-for list="{{ dtStatuses }}" as="t" hint-placeholder-count="5">
+                    <button onClick="{{ t.go }}" style="height:36px;padding:0 14px;border:1px solid {{ t.bd }};border-radius:999px;background:{{ t.bg }};color:{{ t.fg }};font-size:12px;font-weight:500;cursor:pointer">{{ t.t }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;box-shadow:0 8px 24px rgba(33,30,28,0.08);overflow:hidden">
+                <sc-for list="{{ dtRows }}" as="d" hint-placeholder-count="4">
+                  <button onClick="{{ d.open }}" style="width:100%;display:grid;grid-template-columns:{{ dtCols }};gap:10px;align-items:center;padding:16px 20px;border:none;border-bottom:1px solid #EFE8E3;background:#fff;cursor:pointer;text-align:left;transition:background .18s" style-hover="background:#FBF6F3">
+                    <span style="min-width:0">
+                      <span style="display:block;font-size:14px;font-weight:500">{{ d.tipo }}</span>
+                      <span style="display:block;font-size:12px;color:#79716B;margin-top:2px">{{ d.codigo }}</span>
+                    </span>
+                    <span style="font-size:13px;color:#211E1C">{{ d.paciente }}</span>
+                    <span style="font-size:13px;color:#79716B">{{ d.data }}</span>
+                    <span style="display:inline-flex;align-items:center;justify-self:start;height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;background:{{ d.chipBg }};color:{{ d.chipFg }}">{{ d.status }}</span>
+                  </button>
+                </sc-for>
+                <sc-if value="{{ dtEmpty }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:40px;text-align:center">
+                    <div style="width:52px;height:52px;margin:0 auto 12px;border-radius:999px;background:#FBF6F3"></div>
+                    <div style="font-size:14px;font-weight:500">Nenhum documento neste filtro</div>
+                    <div style="font-size:13px;color:#79716B;margin-top:4px">Emita a partir de uma consulta confirmada.</div>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rModelos }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:up .25s ease-out">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px">
+                <div>
+                  <h1 style="margin:0 0 4px;font-size:26px;font-weight:600;letter-spacing:-.6px">Modelos</h1>
+                  <p style="margin:0;font-size:14px;color:#79716B">Templates do sistema e os seus, com placeholders.</p>
+                </div>
+                <button onClick="{{ mdNew }}" style="height:44px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Novo modelo</button>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px">
+                <sc-for list="{{ mdList }}" as="t" hint-placeholder-count="4">
+                  <button onClick="{{ t.open }}" style="text-align:left;padding:20px;border:1px solid #EFE8E3;border-radius:24px;background:#fff;box-shadow:0 8px 24px rgba(33,30,28,0.08);cursor:pointer;transition:transform .18s" style-hover="transform:translateY(-2px)">
+                    <span style="display:{{ t.padraoDisplay }};align-items:center;height:24px;padding:0 10px;border-radius:999px;background:#FBF6F3;color:#79716B;font-size:11px;font-weight:500;margin-bottom:10px">padrão do sistema</span>
+                    <span style="display:block;font-size:15px;font-weight:600;letter-spacing:-.2px">{{ t.nome }}</span>
+                    <span style="display:block;font-size:12px;color:#79716B;margin-top:6px">{{ t.tipo }}</span>
+                    <span style="display:block;font-size:12px;color:#EB5057;font-weight:500;margin-top:14px">{{ t.acao }} →</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rAcessos }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:up .25s ease-out;display:grid;gap:16px;max-width:920px">
+              <div>
+                <h1 style="margin:0 0 4px;font-size:26px;font-weight:600;letter-spacing:-.6px">Acessos</h1>
+                <p style="margin:0;font-size:14px;color:#79716B">O paciente aprova o que você pode ver, e por quanto tempo.</p>
+              </div>
+              <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                <h2 style="margin:0 0 16px;font-size:16px;font-weight:600">Solicitar acesso</h2>
+                <sc-if value="{{ acSent }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:20px;border-radius:16px;background:#E5F4F0;color:#0E7E70;font-size:13px;line-height:1.6">Solicitação enviada. Se houver um paciente com esse CPF, ele receberá o pedido no app — não informamos se o CPF existe.
+                    <div style="margin-top:14px"><button onClick="{{ acReset }}" style="height:38px;padding:0 16px;border:1px solid #C7E5DD;border-radius:999px;background:#fff;color:#0E7E70;font-size:13px;font-weight:500;cursor:pointer">Nova solicitação</button></div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ acForm }}" hint-placeholder-val="{{ true }}">
+                  <div>
+                    <div style="display:grid;grid-template-columns:{{ form2 }};gap:14px">
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">CPF do paciente</label>
+                        <input value="{{ acCpf }}" onChange="{{ hAcCpf }}" placeholder="000.000.000-00" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" />
+                      </div>
+                      <div>
+                        <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Mensagem (opcional)</label>
+                        <input value="{{ acMsg }}" onChange="{{ hAcMsg }}" placeholder="Para acompanhamento do quadro" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" />
+                      </div>
+                    </div>
+                    <div style="margin-top:18px">
+                      <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:10px">Seções solicitadas</label>
+                      <div style="display:flex;flex-wrap:wrap;gap:8px">
+                        <sc-for list="{{ acSecoes }}" as="s" hint-placeholder-count="5">
+                          <button onClick="{{ s.go }}" style="height:38px;padding:0 16px;border:1px solid {{ s.bd }};border-radius:999px;background:{{ s.bg }};color:{{ s.fg }};font-size:13px;font-weight:500;cursor:pointer">{{ s.x }}</button>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <button onClick="{{ acSubmit }}" style="margin-top:20px;height:46px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Enviar solicitação</button>
+                  </div>
+                </sc-if>
+              </div>
+              <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;box-shadow:0 8px 24px rgba(33,30,28,0.08);overflow:hidden">
+                <h2 style="margin:0;padding:22px 22px 14px;font-size:16px;font-weight:600">Meus pedidos</h2>
+                <sc-for list="{{ acRows }}" as="r" hint-placeholder-count="2">
+                  <div style="display:grid;grid-template-columns:{{ acCols }};gap:10px;align-items:center;padding:16px 22px;border-top:1px solid #EFE8E3">
+                    <span style="min-width:0">
+                      <span style="display:block;font-size:14px;font-weight:500">{{ r.nome }}</span>
+                      <span style="display:block;font-size:12px;color:#79716B;margin-top:2px">{{ r.cpf }}</span>
+                    </span>
+                    <span style="font-size:13px;color:#79716B">Validade: {{ r.validade }}</span>
+                    <span style="font-size:12px;color:#79716B;line-height:1.5">{{ r.secoes }}</span>
+                    <span style="display:inline-flex;align-items:center;justify-self:start;height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.chipBg }};color:{{ r.chipFg }}">{{ r.status }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ rPerfil }}" hint-placeholder-val="{{ false }}">
+            <div style="animation:up .25s ease-out;display:grid;gap:16px;max-width:860px">
+              <div>
+                <h1 style="margin:0 0 4px;font-size:26px;font-weight:600;letter-spacing:-.6px">Perfil</h1>
+                <p style="margin:0;font-size:14px;color:#79716B">Seus dados profissionais e de emitente.</p>
+              </div>
+              <div style="background:#fff;border:1px solid #EFE8E3;border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                <h2 style="margin:0 0 16px;font-size:16px;font-weight:600">Dados do médico</h2>
+                <div style="display:grid;grid-template-columns:{{ form2 }};gap:14px">
+                  <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Nome</label><input value="{{ pfNome }}" onChange="{{ hPfNome }}" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                  <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">CRM</label><input value="{{ pfCrm }}" onChange="{{ hPfCrm }}" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                  <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">RQE</label><input value="{{ pfRqe }}" onChange="{{ hPfRqe }}" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                  <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Especialidade</label><input value="{{ pfEsp }}" onChange="{{ hPfEsp }}" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                  <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Clínica</label><input value="{{ pfClinica }}" onChange="{{ hPfClinica }}" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                  <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Preço da teleconsulta (R$)</label><input value="{{ pfPreco }}" onChange="{{ hPfPreco }}" inputMode="numeric" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                </div>
+              </div>
+              <div style="background:#fff;border:1px solid {{ pfEmitBd }};border-radius:24px;padding:22px;box-shadow:0 8px 24px rgba(33,30,28,0.08)">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:6px">
+                  <h2 style="margin:0;font-size:16px;font-weight:600">Dados de emitente</h2>
+                  <span style="display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;background:{{ pfEmitBg }};color:{{ pfEmitFg }};font-size:12px;font-weight:500">{{ pfEmitLabel }}</span>
+                </div>
+                <p style="margin:0 0 16px;font-size:13px;color:#79716B;line-height:1.6">Endereço profissional e telefone são obrigatórios para emitir receita de controle especial (Portaria 344/98).</p>
+                <div style="display:grid;grid-template-columns:{{ form2 }};gap:14px">
+                  <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Endereço profissional</label><input value="{{ pfEnd }}" onChange="{{ hPfEnd }}" placeholder="Rua, número, sala, bairro, cidade/UF" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                  <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Telefone</label><input value="{{ pfTel }}" onChange="{{ hPfTel }}" placeholder="(82) 0000-0000" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px">
+                  <button onClick="{{ pfSave }}" style="height:46px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Salvar dados</button>
+                  <button onClick="{{ pfFillExample }}" style="height:46px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Preencher exemplo</button>
+                </div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:10px">
+                <button onClick="{{ goPublic }}" style="height:44px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Verificação pública</button>
+                <button onClick="{{ pfLogout }}" style="height:44px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#DC2626;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FEECEC">Sair</button>
+              </div>
+            </div>
+          </sc-if>
+        </main>
+      </div>
+
+      <nav style="display:{{ bottomBarDisplay }};position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-top:1px solid #EFE8E3;padding:8px 8px 10px;justify-content:space-around">
+        <sc-for list="{{ bottomNav }}" as="b" hint-placeholder-count="4">
+          <button onClick="{{ b.go }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border:none;background:none;color:{{ b.fg }};font-size:11px;font-weight:500;cursor:pointer;min-height:48px">
+            <span style="display:flex;align-items:center;justify-content:center">{{ b.icon }}</span>
+            {{ b.name }}
+          </button>
+        </sc-for>
+      </nav>
+
+      <sc-if value="{{ wzOpen }}" hint-placeholder-val="{{ false }}">
+        <div role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:80;background:rgba(33,30,28,.42);display:flex;align-items:{{ sheetAlign }};justify-content:center;padding:{{ sheetPad }}">
+          <div style="width:100%;max-width:780px;max-height:{{ sheetMaxH }};background:#fff;border-radius:{{ sheetRadius }};display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 24px rgba(33,30,28,0.24);animation:up .22s ease-out">
+            <div style="padding:20px 22px 16px;border-bottom:1px solid #EFE8E3">
+              <div style="display:flex;align-items:center;gap:12px">
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:12px;color:#79716B;font-weight:500">Emitir documento</div>
+                  <div style="font-size:18px;font-weight:600;letter-spacing:-.3px;margin-top:2px">{{ wzTipoLabel }}</div>
+                </div>
+                <button onClick="{{ wzClose }}" aria-label="Fechar" style="width:38px;height:38px;flex:none;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:16px;color:#79716B;cursor:pointer" style-hover="background:#FBF6F3">×</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;margin-top:16px;overflow-x:auto">
+                <sc-for list="{{ wzSteps }}" as="st" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:8px;flex:none">
+                    <span style="width:26px;height:26px;border-radius:999px;background:{{ st.bg }};color:{{ st.fg }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;transition:background .2s">{{ st.n }}</span>
+                    <span style="font-size:12px;font-weight:500;color:{{ st.lfg }};white-space:nowrap">{{ st.label }}</span>
+                    <span style="width:22px;height:1px;background:#EFE8E3"></span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="flex:1;overflow-y:auto;padding:22px">
+              <sc-if value="{{ wzStep1 }}" hint-placeholder-val="{{ true }}">
+                <div>
+                  <div style="font-size:13px;color:#79716B;margin-bottom:12px">Escolha o tipo de documento</div>
+                  <div style="display:grid;grid-template-columns:{{ form2 }};gap:10px">
+                    <sc-for list="{{ wzTipos }}" as="t" hint-placeholder-count="5">
+                      <button onClick="{{ t.go }}" style="text-align:left;padding:16px 18px;border:1px solid {{ t.bd }};border-radius:16px;background:{{ t.bg }};color:{{ t.fg }};font-size:14px;font-weight:500;cursor:pointer;transition:all .18s" style-hover="border-color:#EB5057">{{ t.t }}</button>
+                    </sc-for>
+                  </div>
+                  <div style="font-size:13px;color:#79716B;margin:22px 0 12px">Usar um modelo (opcional)</div>
+                  <div style="display:grid;gap:8px">
+                    <sc-for list="{{ wzModelos }}" as="m" hint-placeholder-count="3">
+                      <button onClick="{{ m.go }}" style="text-align:left;padding:14px 16px;border:1px solid {{ m.bd }};border-radius:16px;background:#FBF6F3;font-size:13px;cursor:pointer">{{ m.nome }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ wzBlocked }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:24px;border-radius:20px;background:#FFECEA;border:1px solid #F8D7D3">
+                  <div style="font-size:16px;font-weight:600;margin-bottom:8px">Complete seus dados de emitente</div>
+                  <div style="font-size:13px;color:#79716B;line-height:1.7;margin-bottom:18px">A receita de controle especial exige endereço profissional e telefone do emitente impressos no documento (Portaria 344/98). Preencha o perfil e volte para concluir a emissão.</div>
+                  <button onClick="{{ wzGoPerfil }}" style="height:46px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Completar perfil de emitente</button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ wzStep2 }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+                    <button onClick="{{ wzFill }}" style="height:36px;padding:0 14px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#79716B;font-size:12px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Preencher exemplo</button>
+                  </div>
+
+                  <sc-if value="{{ wzIsReceita }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:grid;gap:12px">
+                      <sc-for list="{{ wzItems }}" as="it" hint-placeholder-count="1">
+                        <div style="padding:16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3">
+                          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                            <span style="font-size:12px;font-weight:600;color:#79716B">Item {{ it.n }}</span>
+                            <span style="margin-left:auto;display:flex;gap:6px">
+                              <button onClick="{{ it.up }}" aria-label="Subir" style="width:30px;height:30px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#79716B;cursor:pointer;font-size:12px">↑</button>
+                              <button onClick="{{ it.down }}" aria-label="Descer" style="width:30px;height:30px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#79716B;cursor:pointer;font-size:12px">↓</button>
+                              <button onClick="{{ it.del }}" aria-label="Remover" style="width:30px;height:30px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#DC2626;cursor:pointer;font-size:12px">×</button>
+                            </span>
+                          </div>
+                          <div style="display:grid;grid-template-columns:{{ form2 }};gap:12px">
+                            <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Medicamento *</label><input value="{{ it.med }}" onChange="{{ it.hMed }}" placeholder="Amoxicilina 500mg" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                            <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Apresentação</label><input value="{{ it.apres }}" onChange="{{ it.hApres }}" placeholder="cápsula" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                            <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Quantidade</label><input value="{{ it.qtd }}" onChange="{{ it.hQtd }}" placeholder="21 cápsulas" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                            <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Duração (dias)</label><input value="{{ it.dur }}" onChange="{{ it.hDur }}" inputMode="numeric" placeholder="7" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                          </div>
+                          <div style="margin-top:12px"><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Posologia *</label><input value="{{ it.pos }}" onChange="{{ it.hPos }}" placeholder="1 cápsula de 8 em 8 horas" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                          <div style="margin-top:12px"><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Observações</label><input value="{{ it.obs }}" onChange="{{ it.hObs }}" placeholder="Após as refeições" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                        </div>
+                      </sc-for>
+                      <button onClick="{{ wzAddItem }}" style="justify-self:start;height:42px;padding:0 18px;border:1px dashed #EB5057;border-radius:999px;background:#fff;color:#EB5057;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FFECEA">+ Adicionar medicamento</button>
+                      <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Instruções gerais</label><textarea value="{{ wzInstrucoes }}" onChange="{{ hWzInstr }}" placeholder="Orientações ao paciente" style="width:100%;min-height:90px;padding:12px 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:#EB5057;background:#fff"></textarea></div>
+                      <sc-if value="{{ wzIsEspecial }}" hint-placeholder-val="{{ false }}">
+                        <div style="padding:16px;border:1px solid #F8D7D3;border-radius:16px;background:#FFECEA">
+                          <div style="font-size:12px;font-weight:600;margin-bottom:8px">Controle especial · Portaria 344/98</div>
+                          <div style="font-size:12px;color:#79716B;line-height:1.6;margin-bottom:12px">Duas vias: retenção na farmácia e orientação ao paciente. O endereço do paciente é obrigatório.</div>
+                          <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Endereço do paciente *</label>
+                          <input value="{{ wzEndPaciente }}" onChange="{{ hWzEnd }}" placeholder="Rua, número, bairro, cidade/UF" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" />
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ wzIsAtestado }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:grid;gap:14px">
+                      <div style="display:grid;grid-template-columns:{{ form3 }};gap:12px">
+                        <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Início do afastamento</label><input value="{{ wzInicio }}" onChange="{{ hWzInicio }}" type="date" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#FBF6F3;font-size:14px;outline:none" /></div>
+                        <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Dias de afastamento *</label><input value="{{ wzDias }}" onChange="{{ hWzDias }}" inputMode="numeric" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#FBF6F3;font-size:14px;outline:none" /></div>
+                        <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Término (calculado)</label><input value="{{ wzFim }}" readOnly="{{ true }}" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#EFE8E3;color:#79716B;font-size:14px;outline:none" /></div>
+                      </div>
+                      <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Finalidade</label><input value="{{ wzFinalidade }}" onChange="{{ hWzFinalidade }}" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                      <div style="display:grid;grid-template-columns:{{ form2 }};gap:12px;align-items:end">
+                        <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">CID-10</label><input value="{{ wzCid }}" onChange="{{ hWzCid }}" placeholder="J00, M54.5…" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                        <button onClick="{{ wzToggleCid }}" style="display:flex;align-items:center;gap:12px;height:44px;padding:0 16px;border:1px solid #EFE8E3;border-radius:14px;background:#FBF6F3;cursor:pointer;text-align:left">
+                          <span style="position:relative;width:44px;height:24px;flex:none;border-radius:999px;background:{{ wzCidBg }};transition:background .18s">
+                            <span style="position:absolute;top:2px;left:{{ wzCidX }};width:20px;height:20px;border-radius:999px;background:#fff;transition:left .18s"></span>
+                          </span>
+                          <span style="font-size:12px;color:#79716B;line-height:1.4">Incluir CID no documento (com autorização do paciente)</span>
+                        </button>
+                      </div>
+                      <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Observações</label><textarea value="{{ wzObs }}" onChange="{{ hWzObs }}" style="width:100%;min-height:90px;padding:12px 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:#EB5057;background:#fff"></textarea></div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ wzIsExame }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:grid;gap:12px">
+                      <sc-for list="{{ wzExames }}" as="it" hint-placeholder-count="1">
+                        <div style="padding:16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3">
+                          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+                            <span style="font-size:12px;font-weight:600;color:#79716B">Item {{ it.n }}</span>
+                            <span style="margin-left:auto;display:flex;gap:6px">
+                              <button onClick="{{ it.up }}" aria-label="Subir" style="width:30px;height:30px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#79716B;cursor:pointer;font-size:12px">↑</button>
+                              <button onClick="{{ it.down }}" aria-label="Descer" style="width:30px;height:30px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#79716B;cursor:pointer;font-size:12px">↓</button>
+                              <button onClick="{{ it.del }}" aria-label="Remover" style="width:30px;height:30px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#DC2626;cursor:pointer;font-size:12px">×</button>
+                            </span>
+                          </div>
+                          <div style="display:grid;grid-template-columns:{{ form2 }};gap:12px">
+                            <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Nome *</label><input value="{{ it.nome }}" onChange="{{ it.hNome }}" placeholder="Hemograma completo" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                            <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Código TUSS</label><input value="{{ it.tuss }}" onChange="{{ it.hTuss }}" placeholder="40304361" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                            <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Quantidade</label><input value="{{ it.qtd }}" onChange="{{ it.hQtd }}" inputMode="numeric" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                            <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Lateralidade</label>
+                              <select value="{{ it.lat }}" onChange="{{ it.hLat }}" style="width:100%;height:44px;padding:0 12px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none">
+                                <option value="—">—</option><option value="Direita">Direita</option><option value="Esquerda">Esquerda</option><option value="Bilateral">Bilateral</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div style="margin-top:12px"><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Justificativa</label><input value="{{ it.just }}" onChange="{{ it.hJust }}" style="width:100%;height:44px;padding:0 14px;border:1px solid #EFE8E3;border-radius:14px;background:#fff;font-size:14px;outline:none" style-focus="border-color:#EB5057" /></div>
+                        </div>
+                      </sc-for>
+                      <button onClick="{{ wzAddExame }}" style="justify-self:start;height:42px;padding:0 18px;border:1px dashed #EB5057;border-radius:999px;background:#fff;color:#EB5057;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#FFECEA">+ Adicionar item</button>
+                      <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Indicação clínica</label><textarea value="{{ wzIndicacao }}" onChange="{{ hWzIndicacao }}" style="width:100%;min-height:90px;padding:12px 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;line-height:1.6;outline:none;resize:vertical" style-focus="border-color:#EB5057;background:#fff"></textarea></div>
+                      <button onClick="{{ wzToggleUrg }}" style="display:flex;align-items:center;gap:12px;height:48px;padding:0 16px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;cursor:pointer">
+                        <span style="position:relative;width:44px;height:24px;flex:none;border-radius:999px;background:{{ wzUrgBg }};transition:background .18s">
+                          <span style="position:absolute;top:2px;left:{{ wzUrgX }};width:20px;height:20px;border-radius:999px;background:#fff;transition:left .18s"></span>
+                        </span>
+                        <span style="font-size:13px;color:#211E1C;font-weight:500">Caráter urgente</span>
+                      </button>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ wzStep3 }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px solid #EFE8E3;border-radius:20px;overflow:hidden">
+                  <div style="padding:22px;border-bottom:1px solid #EFE8E3;background:#FBF6F3">
+                    <div style="font-size:16px;font-weight:700;letter-spacing:-.3px">{{ wzPrev.medico }}</div>
+                    <div style="font-size:12px;color:#79716B;margin-top:4px">{{ wzPrev.crm }}</div>
+                    <div style="font-size:12px;color:#79716B;margin-top:2px">{{ wzPrev.clinica }} · {{ wzPrev.endereco }} · {{ wzPrev.telefone }}</div>
+                  </div>
+                  <div style="padding:22px">
+                    <div style="text-align:center;font-size:15px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-bottom:20px">{{ wzPrev.titulo }}</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:16px;padding-bottom:18px;border-bottom:1px dashed #EFE8E3;margin-bottom:18px">
+                      <div><div style="font-size:11px;color:#79716B">Paciente</div><div style="font-size:14px;font-weight:500">{{ wzPrev.paciente }}</div></div>
+                      <div><div style="font-size:11px;color:#79716B">Dados</div><div style="font-size:13px">{{ wzPrev.pacienteInfo }}</div></div>
+                      <div><div style="font-size:11px;color:#79716B">Emissão</div><div style="font-size:13px">{{ wzPrev.data }}</div></div>
+                    </div>
+                    <div style="display:grid;gap:16px">
+                      <sc-for list="{{ wzPrev.blocos }}" as="b" hint-placeholder-count="2">
+                        <div>
+                          <div style="font-size:11px;font-weight:600;color:#79716B;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">{{ b.h }}</div>
+                          <div style="display:grid;gap:8px">
+                            <sc-for list="{{ b.lines }}" as="ln" hint-placeholder-count="1">
+                              <div style="font-size:14px;line-height:1.7;white-space:pre-line">{{ ln }}</div>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:18px 22px;border-top:1px solid #EFE8E3;background:#FBF6F3">
+                    <div style="display:grid;grid-template-columns:repeat(6,10px);gap:2px;flex:none">
+                      <sc-for list="{{ wzPrev.qr }}" as="c" hint-placeholder-count="36">
+                        <span style="width:10px;height:10px;background:{{ c.bg }}"></span>
+                      </sc-for>
+                    </div>
+                    <div style="min-width:180px">
+                      <div style="font-size:11px;color:#79716B">Código de validação</div>
+                      <div style="font-size:13px;font-weight:600;letter-spacing:1px">{{ wzPrev.codigo }}</div>
+                      <div style="font-size:11px;color:#79716B;margin-top:4px">Verifique em me.app/verificar</div>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ wzStep4 }}" hint-placeholder-val="{{ false }}">
+                <div>
+                  <sc-if value="{{ wzPhaseIdle }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:grid;gap:16px">
+                      <div style="padding:20px;border:1px solid #EFE8E3;border-radius:20px;background:#FBF6F3">
+                        <div style="font-size:12px;color:#79716B;font-weight:500">Status atual</div>
+                        <div style="font-size:16px;font-weight:600;margin-top:4px">Aguardando assinatura</div>
+                        <div style="font-size:13px;color:#79716B;line-height:1.6;margin-top:10px">A assinatura usa seu certificado ICP-Brasil em nuvem (VIDaaS). Você aprovará a operação no aplicativo do certificado.</div>
+                      </div>
+                      <sc-if value="{{ wzFailed }}" hint-placeholder-val="{{ false }}">
+                        <div style="padding:16px 18px;border-radius:16px;background:#FEECEC;color:#DC2626;font-size:13px;line-height:1.6">A autorização expirou e o documento voltou para rascunho. Você pode tentar assinar novamente.</div>
+                      </sc-if>
+                      <button onClick="{{ wzSign }}" style="justify-self:start;height:50px;padding:0 26px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Assinar com certificado em nuvem</button>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ wzPhaseWaiting }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:grid;gap:18px;justify-items:center;text-align:center;padding:20px 0">
+                      <div style="width:64px;height:64px;border-radius:999px;border:3px solid #FFECEA;border-top-color:#EB5057;animation:spin .9s linear infinite"></div>
+                      <div>
+                        <div style="font-size:17px;font-weight:600">Aprove no app do seu certificado</div>
+                        <div style="font-size:13px;color:#79716B;line-height:1.6;margin-top:8px;max-width:400px">Enviamos uma solicitação de assinatura para o VIDaaS. Confirme na notificação para concluir.</div>
+                      </div>
+                      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+                        <button onClick="{{ wzApprove }}" style="height:46px;padding:0 22px;border:none;border-radius:999px;background:#211E1C;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#3A3532">Abrir autorização (mock)</button>
+                        <button onClick="{{ wzFail }}" style="height:46px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#DC2626;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FEECEC">Simular expiração</button>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ wzPhaseSigned }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:grid;gap:16px">
+                      <div style="padding:20px;border:1px solid #C7E5DD;border-radius:20px;background:#E5F4F0">
+                        <div style="font-size:12px;color:#0E7E70;font-weight:600">Assinado</div>
+                        <div style="font-size:17px;font-weight:600;margin-top:4px">{{ wzPrev.titulo }} · {{ wzPrev.codigo }}</div>
+                        <div style="font-size:13px;color:#0E7E70;line-height:1.6;margin-top:10px">{{ wzCert }} · {{ wzPrev.signedAt }}</div>
+                      </div>
+                      <div style="display:flex;flex-wrap:wrap;gap:10px">
+                        <button onClick="{{ wzDownload }}" style="height:46px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Baixar PDF</button>
+                        <button onClick="{{ wzVerify }}" style="height:46px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Verificação pública</button>
+                        <button onClick="{{ wzFinish }}" style="height:46px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Ver em Documentos</button>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 22px;border-top:1px solid #EFE8E3;background:#fff">
+              <sc-if value="{{ wzHasErr }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1;min-width:200px;font-size:12px;color:#DC2626;line-height:1.5">{{ wzErr }}</div>
+              </sc-if>
+              <div style="flex:1"></div>
+              <button onClick="{{ wzSaveDraft }}" style="height:46px;padding:0 18px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Salvar rascunho</button>
+              <sc-if value="{{ wzShowBack }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ wzBack }}" style="height:46px;padding:0 18px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Voltar</button>
+              </sc-if>
+              <sc-if value="{{ wzShowNext }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ wzNext }}" style="height:46px;padding:0 24px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">{{ wzNextLabel }}</button>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ dtModalOpen }}" hint-placeholder-val="{{ false }}">
+        <div role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:80;background:rgba(33,30,28,.42);display:flex;align-items:{{ sheetAlign }};justify-content:center;padding:{{ sheetPad }}">
+          <div style="width:100%;max-width:700px;max-height:{{ sheetMaxH }};background:#fff;border-radius:{{ sheetRadius }};display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 24px rgba(33,30,28,0.24);animation:up .22s ease-out">
+            <div style="display:flex;align-items:center;gap:12px;padding:20px 22px;border-bottom:1px solid #EFE8E3">
+              <div style="flex:1;min-width:0">
+                <div style="font-size:18px;font-weight:600;letter-spacing:-.3px">{{ dtDoc.titulo }}</div>
+                <div style="font-size:12px;color:#79716B;margin-top:2px">{{ dtDoc.status }} · {{ dtDoc.codigo }}</div>
+              </div>
+              <button onClick="{{ dtClose }}" aria-label="Fechar" style="width:38px;height:38px;flex:none;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:16px;color:#79716B;cursor:pointer" style-hover="background:#FBF6F3">×</button>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:22px">
+              <div style="border:1px solid #EFE8E3;border-radius:20px;overflow:hidden">
+                <div style="padding:20px;border-bottom:1px solid #EFE8E3;background:#FBF6F3">
+                  <div style="font-size:15px;font-weight:700">{{ dtDoc.medico }}</div>
+                  <div style="font-size:12px;color:#79716B;margin-top:4px">{{ dtDoc.crm }}</div>
+                  <div style="font-size:12px;color:#79716B;margin-top:2px">{{ dtDoc.clinica }} · {{ dtDoc.endereco }}</div>
+                </div>
+                <div style="padding:20px">
+                  <div style="display:flex;flex-wrap:wrap;gap:16px;padding-bottom:16px;border-bottom:1px dashed #EFE8E3;margin-bottom:16px">
+                    <div><div style="font-size:11px;color:#79716B">Paciente</div><div style="font-size:14px;font-weight:500">{{ dtDoc.paciente }}</div></div>
+                    <div><div style="font-size:11px;color:#79716B">Emissão</div><div style="font-size:13px">{{ dtDoc.data }}</div></div>
+                  </div>
+                  <div style="display:grid;gap:16px">
+                    <sc-for list="{{ dtDoc.blocos }}" as="b" hint-placeholder-count="2">
+                      <div>
+                        <div style="font-size:11px;font-weight:600;color:#79716B;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">{{ b.h }}</div>
+                        <div style="display:grid;gap:8px">
+                          <sc-for list="{{ b.lines }}" as="ln" hint-placeholder-count="1">
+                            <div style="font-size:14px;line-height:1.7;white-space:pre-line">{{ ln }}</div>
+                          </sc-for>
+                        </div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:18px 20px;border-top:1px solid #EFE8E3;background:#FBF6F3">
+                  <div style="display:grid;grid-template-columns:repeat(6,10px);gap:2px;flex:none">
+                    <sc-for list="{{ dtDoc.qr }}" as="c" hint-placeholder-count="36">
+                      <span style="width:10px;height:10px;background:{{ c.bg }}"></span>
+                    </sc-for>
+                  </div>
+                  <div>
+                    <div style="font-size:11px;color:#79716B">Código de validação</div>
+                    <div style="font-size:13px;font-weight:600;letter-spacing:1px">{{ dtDoc.codigo }}</div>
+                    <div style="font-size:11px;color:#79716B;margin-top:4px">{{ dtDoc.signedAt }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;padding:16px 22px;border-top:1px solid #EFE8E3">
+              <sc-if value="{{ dtIsSigned }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ dtDownload }}" style="height:46px;padding:0 22px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Baixar PDF</button>
+              </sc-if>
+              <button onClick="{{ dtVerify }}" style="height:46px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Verificação pública</button>
+              <sc-if value="{{ dtCanSign }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ dtCancel }}" style="height:46px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;color:#DC2626;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FEECEC">Cancelar documento</button>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ mdEditing }}" hint-placeholder-val="{{ false }}">
+        <div role="dialog" aria-modal="true" style="position:fixed;inset:0;z-index:80;background:rgba(33,30,28,.42);display:flex;align-items:{{ sheetAlign }};justify-content:center;padding:{{ sheetPad }}">
+          <div style="width:100%;max-width:820px;max-height:{{ sheetMaxH }};background:#fff;border-radius:{{ sheetRadius }};display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 24px rgba(33,30,28,0.24);animation:up .22s ease-out">
+            <div style="display:flex;align-items:center;gap:12px;padding:20px 22px;border-bottom:1px solid #EFE8E3">
+              <div style="flex:1;font-size:18px;font-weight:600;letter-spacing:-.3px">Modelo de documento</div>
+              <button onClick="{{ mdClose }}" aria-label="Fechar" style="width:38px;height:38px;flex:none;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:16px;color:#79716B;cursor:pointer" style-hover="background:#FBF6F3">×</button>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:22px;display:grid;gap:16px">
+              <div style="display:grid;grid-template-columns:{{ form2 }};gap:12px">
+                <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Nome</label><input value="{{ mdNome }}" onChange="{{ hMdNome }}" disabled="{{ mdReadonly }}" style="width:100%;height:46px;padding:0 14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none" style-focus="border-color:#EB5057;background:#fff" /></div>
+                <div><label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Tipo</label>
+                  <select value="{{ mdTipo }}" onChange="{{ hMdTipo }}" disabled="{{ mdReadonly }}" style="width:100%;height:46px;padding:0 12px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:14px;outline:none">
+                    <option value="Receita simples">Receita simples</option><option value="Receita de controle especial">Receita de controle especial</option><option value="Atestado">Atestado</option><option value="Pedido de exame">Pedido de exame</option><option value="Solicitação de procedimento">Solicitação de procedimento</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;font-weight:500;color:#79716B;margin-bottom:6px">Corpo do modelo</label>
+                <textarea value="{{ mdCorpo }}" onChange="{{ hMdCorpo }}" disabled="{{ mdReadonly }}" style="width:100%;min-height:180px;padding:14px;border:1px solid #EFE8E3;border-radius:16px;background:#FBF6F3;font-size:13px;line-height:1.7;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;outline:none;resize:vertical" style-focus="border-color:#EB5057;background:#fff"></textarea>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:500;color:#79716B;margin-bottom:10px">Placeholders disponíveis</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <sc-for list="{{ mdPlaceholders }}" as="p" hint-placeholder-count="8">
+                    <span style="display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:#FBF6F3;border:1px solid #EFE8E3;font-size:11px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#79716B">{{ p.p }}</span>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:500;color:#79716B;margin-bottom:10px">Pré-visualização com dados de exemplo</div>
+                <div style="padding:18px;border:1px solid #EFE8E3;border-radius:16px;background:#FFFDFB;font-size:13px;line-height:1.8;white-space:pre-line">{{ mdPreview }}</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;padding:16px 22px;border-top:1px solid #EFE8E3">
+              <div style="flex:1"></div>
+              <button onClick="{{ mdClose }}" style="height:46px;padding:0 20px;border:1px solid #EFE8E3;border-radius:999px;background:#fff;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#FBF6F3">Fechar</button>
+              <sc-if value="{{ mdCanSave }}" hint-placeholder-val="{{ true }}">
+                <button onClick="{{ mdSave }}" style="height:46px;padding:0 24px;border:none;border-radius:999px;background:#EB5057;color:#fff;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#C23A45">Salvar modelo</button>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div role="status" aria-live="polite" style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:90;display:flex;align-items:center;gap:10px;padding:14px 20px;border-radius:999px;background:#211E1C;color:#fff;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(33,30,28,0.24);animation:up .2s ease-out;max-width:calc(100vw - 32px)">
+      <span style="width:8px;height:8px;flex:none;border-radius:999px;background:{{ toastDot }}"></span>
+      {{ toastMsg }}
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startLoggedIn&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Protótipo&quot;},&quot;signDelayMs&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:2600,&quot;min&quot;:600,&quot;max&quot;:6000,&quot;step&quot;:200,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Protótipo&quot;}}">
+class Component extends DCLogic {
+  today = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+  state = this.init();
+
+  // ---- helpers ----
+  iso(d) { const p = n => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
+  addD(n) { const d = new Date(this.today); d.setDate(d.getDate() + n); return d; }
+  fmtBR(s) { if (!s) return ''; const a = s.split('-'); return a[2] + '/' + a[1] + '/' + a[0]; }
+  toMin(t) { const a = t.split(':'); return (+a[0]) * 60 + (+a[1]); }
+  fromMin(v) { const p = n => String(n).padStart(2, '0'); return p(Math.floor(v / 60)) + ':' + p(v % 60); }
+  ini(n) { return n.split(' ').filter(w => w.length > 2).slice(0, 2).map(w => w[0]).join(''); }
+  icon(name, size) {
+    const P = {
+      home: 'M3 10.5 12 3.5l9 7M5.5 9.5V20h13V9.5',
+      cal: 'M4 6.5h16V20H4zM8 3.5v4M16 3.5v4M4 11h16',
+      clip: 'M9 3.5h6v3H9zM6.5 6.5h11v14h-11z M9.5 11h5M9.5 15h5',
+      doc: 'M7 3.5h7l3.5 3.5V20.5H7zM14 3.5v4h3.5',
+      layers: 'M12 3.5 3.5 8 12 12.5 20.5 8zM3.5 13.5 12 18l8.5-4.5',
+      key: 'M14.5 9.5a3 3 0 1 0-6 0 3 3 0 0 0 6 0M11.5 12.5V21M11.5 18h3.5',
+      user: 'M12 11.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4.5 21a7.5 7.5 0 0 1 15 0',
+      bell: 'M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10M10 19a2 2 0 0 0 4 0',
+      menu: 'M4 7h16M4 12h16M4 17h16'
+    };
+    return React.createElement('svg', { width: size || 19, height: size || 19, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      React.createElement('path', { d: P[name] }));
+  }
+  chip(s) {
+    const m = {
+      'Agendada': ['#FEF6E7', '#B45309'], 'Confirmada': ['#E5F4F0', '#0E7E70'], 'Concluída': ['#FBF6F3', '#211E1C'],
+      'Cancelada': ['#FEECEC', '#DC2626'], 'Rascunho': ['#FBF6F3', '#79716B'], 'Aguardando assinatura': ['#FEF6E7', '#B45309'],
+      'Assinado': ['#E5F4F0', '#0E7E70'], 'Pendente': ['#FEF6E7', '#B45309'], 'Aprovado': ['#E5F4F0', '#0E7E70'],
+      'Negado': ['#FEECEC', '#DC2626'], 'Revogado': ['#FBF6F3', '#79716B']
+    };
+    return m[s] || ['#FBF6F3', '#79716B'];
+  }
+
+  init() {
+    const D = n => this.iso(this.addD(n));
+    const patients = [
+      { id: 'p1', nome: 'Helena Barbosa', idade: 34, cpf: '***.456.789-**', end: 'Rua das Acácias, 120 — Maceió/AL', consent: true },
+      { id: 'p2', nome: 'Rafael Nogueira', idade: 41, cpf: '***.221.907-**', end: 'Av. Fernandes Lima, 880 — Maceió/AL', consent: false },
+      { id: 'p3', nome: 'Beatriz Lins', idade: 27, cpf: '***.774.310-**', end: 'Rua Sá e Albuquerque, 45 — Maceió/AL', consent: true },
+      { id: 'p4', nome: 'Otávio Ferraz', idade: 58, cpf: '***.019.552-**', end: 'Rua Dr. Antônio Cansanção, 310 — Maceió/AL', consent: true },
+      { id: 'p5', nome: 'Camila Duarte', idade: 33, cpf: '***.640.188-**', end: 'Rua Epaminondas Gracindo, 77 — Maceió/AL', consent: false },
+      { id: 'p6', nome: 'Jonas Peixoto', idade: 65, cpf: '***.321.654-**', end: 'Rua Jangadeiros Alagoanos, 512 — Maceió/AL', consent: true }
+    ];
+    const appts = [
+      { id: 'a1', pid: 'p1', date: D(0), hora: '08:30', dur: 30, tipo: 'Teleconsulta', status: 'Confirmada' },
+      { id: 'a2', pid: 'p2', date: D(0), hora: '09:30', dur: 30, tipo: 'Presencial', status: 'Agendada' },
+      { id: 'a3', pid: 'p3', date: D(0), hora: '11:00', dur: 30, tipo: 'Teleconsulta', status: 'Confirmada' },
+      { id: 'a4', pid: 'p4', date: D(1), hora: '14:00', dur: 30, tipo: 'Presencial', status: 'Confirmada' },
+      { id: 'a5', pid: 'p5', date: D(1), hora: '15:30', dur: 30, tipo: 'Teleconsulta', status: 'Agendada' },
+      { id: 'a6', pid: 'p6', date: D(2), hora: '09:00', dur: 30, tipo: 'Presencial', status: 'Confirmada' },
+      { id: 'a7', pid: 'p1', date: D(-1), hora: '10:00', dur: 30, tipo: 'Presencial', status: 'Concluída' },
+      { id: 'a8', pid: 'p3', date: D(-2), hora: '16:00', dur: 30, tipo: 'Teleconsulta', status: 'Cancelada' }
+    ];
+    const docs = [
+      { id: 'd1', tipo: 'Receita simples', pid: 'p1', aid: 'a7', date: D(-1), status: 'Assinado', codigo: 'ME-7F42-9C10', signedAt: this.fmtBR(D(-1)) + ' 10:42', blocos: [{ h: 'Prescrição', lines: ['1. Amoxicilina 500mg — cápsula — 21 cápsulas\n   1 cápsula de 8 em 8 horas • 7 dias'] }] },
+      { id: 'd2', tipo: 'Atestado', pid: 'p3', aid: 'a8', date: D(-2), status: 'Aguardando assinatura', codigo: '', signedAt: '', blocos: [{ h: 'Atesto', lines: ['Atesto, para fins de justificativa de ausência, que a paciente necessita de afastamento de 2 dia(s).'] }] },
+      { id: 'd3', tipo: 'Pedido de exame', pid: 'p4', aid: '', date: D(-3), status: 'Rascunho', codigo: '', signedAt: '', blocos: [{ h: 'Itens solicitados', lines: ['1. Hemograma completo — TUSS 40304361 — 1 un.'] }] },
+      { id: 'd4', tipo: 'Receita de controle especial', pid: 'p6', aid: '', date: D(-8), status: 'Cancelado', codigo: 'ME-2B90-44AE', signedAt: '', blocos: [{ h: 'Prescrição', lines: ['1. Clonazepam 2mg — comprimido — 30 comprimidos\n   1 comprimido à noite • 30 dias'] }] }
+    ];
+    const windows = [
+      { id: 'w1', dow: 1, ini: '08:00', fim: '12:00', slot: 30 },
+      { id: 'w2', dow: 1, ini: '14:00', fim: '18:00', slot: 30 },
+      { id: 'w3', dow: 3, ini: '08:00', fim: '12:00', slot: 20 },
+      { id: 'w4', dow: 5, ini: '09:00', fim: '13:00', slot: 30 }
+    ];
+    const blocks = [{ id: 'b1', date: D(0), ini: '12:00', fim: '13:00', motivo: 'Almoço' }];
+    const templates = [
+      { id: 't1', nome: 'Receita — antibiótico padrão', tipo: 'Receita simples', padrao: true, corpo: 'Paciente: {{paciente.nome}}\n\n{{#receita.itens}}\n{{item.medicamento}} {{item.apresentacao}} — {{item.quantidade}}\nPosologia: {{item.posologia}}\n{{/receita.itens}}\n\nInstruções gerais: {{receita.instrucoes}}\n\n{{medico.nome}} — {{medico.crm}}' },
+      { id: 't2', nome: 'Atestado — afastamento simples', tipo: 'Atestado', padrao: true, corpo: 'Atesto que {{paciente.nome}} necessita de {{atestado.dias}} dia(s) de afastamento a partir de {{atestado.inicio}}.\n\nFinalidade: {{atestado.finalidade}}\n\n{{medico.nome}} — {{medico.crm}}' },
+      { id: 't3', nome: 'Pedido de exame — check-up', tipo: 'Pedido de exame', padrao: true, corpo: 'Solicito para {{paciente.nome}}:\n\n{{#exames.itens}}\n{{item.nome}} — TUSS {{item.tuss}} — {{item.quantidade}}\n{{/exames.itens}}\n\nIndicação clínica: {{exames.indicacao}}\n\n{{medico.nome}} — {{medico.crm}}' },
+      { id: 't4', nome: 'Receita — hipertensão (meu modelo)', tipo: 'Receita simples', padrao: false, corpo: 'Paciente: {{paciente.nome}}\n\nLosartana 50mg — 1 comprimido pela manhã — uso contínuo\n\nRetorno em 90 dias com aferição diária da pressão.\n\n{{medico.nome}} — {{medico.crm}}' }
+    ];
+    const requests = [
+      { id: 'r1', nome: 'Jonas Peixoto', cpf: '***.321.654-**', status: 'Aprovado', validade: '12/12/2026', secoes: 'Informações médicas, Resultados de exame' },
+      { id: 'r2', nome: 'Camila Duarte', cpf: '***.640.188-**', status: 'Pendente', validade: '—', secoes: 'Resumos de consulta' }
+    ];
+    return {
+      windows, blocks, templates, requests,
+      agendaTab: 'consultas', slotDay: 0, seq: 10,
+      win: { dow: 2, ini: '08:00', fim: '12:00', slot: '30' },
+      blk: { date: D(1), ini: '12:00', fim: '13:00', motivo: '' },
+      soap: {}, wizard: null, docModal: '', remarcar: null, tpl: null,
+      acc: { cpf: '', secoes: [], msg: '', sent: false },
+      csFilter: 'Todas', dtTipo: 'Todos', dtStatus: 'Todos',
+      w: typeof window !== 'undefined' ? window.innerWidth : 1280,
+      view: this.props && this.props.startLoggedIn ? 'app' : 'login',
+      route: { name: 'inicio' }, loading: false,
+      sidebarOpen: false, collapsed: false,
+      email: 'marina.alvares@vidaplena.com.br', senha: '', code: '', errEmail: '', errSenha: '', errCode: '', busy: '',
+      search: '', toast: null,
+      doctor: { nome: 'Dra. Marina Álvares', crm: 'CRM/AL 12345', rqe: 'RQE 8842', esp: 'Clínica Médica', clinica: 'Clínica Vida Plena', preco: '180', twofa: true, emitente: { endereco: '', telefone: '' } },
+      patients, appts, docs, docSeq: 5,
+      verifCode: '', verifState: '', verif: null, verifFrom: 'login'
+    };
+  }
+
+  componentDidMount() { this._r = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this._r); }
+  componentWillUnmount() { window.removeEventListener('resize', this._r); if (this._t) clearTimeout(this._t); }
+
+  toast(msg, kind) { if (this._t) clearTimeout(this._t); this.setState({ toast: { msg, kind: kind || 'ok' } }); this._t = setTimeout(() => this.setState({ toast: null }), 2800); }
+  nav(name, params) {
+    this.setState({ route: { name, params: params || {} }, loading: true, sidebarOpen: false });
+    setTimeout(() => this.setState({ loading: false }), 260);
+  }
+
+  doLogin() {
+    const s = this.state; let errEmail = '', errSenha = '';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s.email)) errEmail = 'Informe um e-mail válido.';
+    if (s.senha.length < 4) errSenha = 'A senha deve ter ao menos 4 caracteres.';
+    if (errEmail || errSenha) { this.setState({ errEmail, errSenha }); return; }
+    this.setState({ errEmail: '', errSenha: '', busy: 'login' });
+    setTimeout(() => this.setState({ busy: '', view: s.doctor.twofa ? '2fa' : 'app', code: '' }), 700);
+  }
+  doVerify2fa() {
+    if (!/^\d{6}$/.test(this.state.code)) { this.setState({ errCode: 'O código deve ter 6 dígitos.' }); return; }
+    this.setState({ errCode: '', busy: 'code' });
+    setTimeout(() => { this.setState({ busy: '', view: 'app', route: { name: 'inicio' } }); this.toast('Bem-vinda, Dra. Marina.'); }, 800);
+  }
+  doVerifyCode() {
+    const code = this.state.verifCode.trim().toUpperCase();
+    if (!code) return;
+    this.setState({ verifState: 'loading' });
+    setTimeout(() => {
+      const d = this.state.docs.find(x => x.codigo && x.codigo.toUpperCase() === code);
+      if (!d) { this.setState({ verifState: 'fail', verif: null }); return; }
+      const p = this.state.patients.find(x => x.id === d.pid);
+      const ok = d.status === 'Assinado';
+      this.setState({
+        verifState: 'ok', verif: {
+          headBg: ok ? '#E5F4F0' : '#FEECEC', headFg: ok ? '#0E7E70' : '#DC2626',
+          headline: ok ? 'Documento autêntico e assinado' : 'Documento cancelado pelo emitente',
+          rows: [
+            { k: 'Tipo', v: d.tipo }, { k: 'Status', v: d.status },
+            { k: 'Emitente', v: this.state.doctor.nome + ' · ' + this.state.doctor.crm },
+            { k: 'Paciente', v: this.ini(p.nome) + ' · ' + p.cpf },
+            { k: 'Emissão', v: this.fmtBR(d.date) }, { k: 'Código', v: d.codigo }
+          ]
+        }
+      });
+    }, 900);
+  }
+
+  freeSlots(offset) {
+    const s = this.state, d = this.addD(offset), isoS = this.iso(d), dowN = d.getDay(), out = [];
+    s.windows.filter(w => w.dow === dowN).sort((a, b) => a.ini.localeCompare(b.ini)).forEach(w => {
+      const slot = +w.slot || 30;
+      for (let t = this.toMin(w.ini); t + slot <= this.toMin(w.fim); t += slot) {
+        const e = t + slot;
+        const bl = s.blocks.some(b => b.date === isoS && t < this.toMin(b.fim) && e > this.toMin(b.ini));
+        const bu = s.appts.some(a => a.date === isoS && a.status !== 'Cancelada' && t < this.toMin(a.hora) + a.dur && e > this.toMin(a.hora));
+        if (!bl && !bu) out.push(this.fromMin(t));
+      }
+    });
+    return out;
+  }
+  nid(p) { const n = this.state.seq + 1; this.setState({ seq: n }); return p + n; }
+  setApptStatus(id, status) {
+    this.setState(st => ({ appts: st.appts.map(a => a.id === id ? Object.assign({}, a, { status }) : a) }));
+    this.toast('Consulta marcada como ' + status.toLowerCase() + '.');
+  }
+  setSoap(aid, key, val) {
+    this.setState(st => { const cur = st.soap[aid] || { s: '', o: '', a: '', p: '', signed: false }; const nx = Object.assign({}, cur); nx[key] = val; const soap = Object.assign({}, st.soap); soap[aid] = nx; return { soap }; });
+  }
+  signSoap(aid) {
+    this.setState(st => { const cur = st.soap[aid] || { s: '', o: '', a: '', p: '' }; const soap = Object.assign({}, st.soap); soap[aid] = Object.assign({}, cur, { signed: true }); return { soap }; });
+    this.toast('Resumo clínico assinado.');
+  }
+
+  blankForm() {
+    return {
+      items: [{ med: '', apres: '', qtd: '', pos: '', dur: '', obs: '' }], instrucoes: '', endPaciente: '',
+      inicio: this.iso(this.today), dias: '2', finalidade: 'Justificativa de ausência', cid: '', incluirCid: false, obs: '',
+      exames: [{ nome: '', tuss: '', qtd: '1', lat: '—', just: '' }], indicacao: '', urgente: false
+    };
+  }
+  openWizard(aid) {
+    const a = this.state.appts.find(x => x.id === aid);
+    this.setState({ wizard: { aid: aid || '', pid: a ? a.pid : 'p1', step: 1, tipo: '', modelo: '', form: this.blankForm(), signPhase: '', docId: '', err: '' } });
+  }
+  setWiz(patch) { this.setState(st => ({ wizard: Object.assign({}, st.wizard, patch) })); }
+  setForm(patch) { this.setState(st => ({ wizard: Object.assign({}, st.wizard, { form: Object.assign({}, st.wizard.form, patch), err: '' }) })); }
+  setRow(list, i, key, val) {
+    this.setState(st => {
+      const arr = st.wizard.form[list].map((r, j) => j === i ? Object.assign({}, r, { [key]: val }) : r);
+      return { wizard: Object.assign({}, st.wizard, { form: Object.assign({}, st.wizard.form, { [list]: arr }), err: '' }) };
+    });
+  }
+  addRow(list) {
+    const blank = list === 'items' ? { med: '', apres: '', qtd: '', pos: '', dur: '', obs: '' } : { nome: '', tuss: '', qtd: '1', lat: '—', just: '' };
+    this.setState(st => ({ wizard: Object.assign({}, st.wizard, { form: Object.assign({}, st.wizard.form, { [list]: st.wizard.form[list].concat([blank]) }) }) }));
+  }
+  delRow(list, i) {
+    this.setState(st => { const arr = st.wizard.form[list].filter((_, j) => j !== i); return { wizard: Object.assign({}, st.wizard, { form: Object.assign({}, st.wizard.form, { [list]: arr.length ? arr : st.wizard.form[list] }) }) }; });
+  }
+  moveRow(list, i, dir) {
+    this.setState(st => {
+      const arr = st.wizard.form[list].slice(), j = i + dir;
+      if (j < 0 || j >= arr.length) return {};
+      const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+      return { wizard: Object.assign({}, st.wizard, { form: Object.assign({}, st.wizard.form, { [list]: arr }) }) };
+    });
+  }
+  fillExample() {
+    const w = this.state.wizard;
+    if (w.tipo.indexOf('Receita') === 0) this.setForm({ items: [{ med: 'Amoxicilina 500mg', apres: 'cápsula', qtd: '21 cápsulas', pos: '1 cápsula de 8 em 8 horas', dur: '7', obs: 'Após as refeições' }], instrucoes: 'Manter hidratação. Retornar se febre persistir por 48h.' });
+    else if (w.tipo === 'Atestado') this.setForm({ dias: '3', finalidade: 'Justificativa de ausência ao trabalho', cid: 'J00' });
+    else this.setForm({ exames: [{ nome: 'Hemograma completo', tuss: '40304361', qtd: '1', lat: '—', just: 'Investigação de quadro infeccioso' }], indicacao: 'Quadro gripal com 5 dias de evolução.' });
+  }
+  endDate(inicio, dias) { const p = inicio.split('-'); const d = new Date(+p[0], +p[1] - 1, +p[2]); d.setDate(d.getDate() + Math.max(0, (+dias || 1) - 1)); return this.iso(d); }
+  buildBlocos(tipo, f) {
+    const B = [];
+    if (tipo.indexOf('Receita') === 0) {
+      B.push({ h: 'Prescrição', lines: f.items.map((it, i) => (i + 1) + '. ' + it.med + (it.apres ? ' — ' + it.apres : '') + (it.qtd ? ' — ' + it.qtd : '') + '\n' + it.pos + (it.dur ? ' • ' + it.dur + ' dias' : '') + (it.obs ? ' • ' + it.obs : '')) });
+      if (f.instrucoes) B.push({ h: 'Instruções gerais', lines: [f.instrucoes] });
+      if (tipo === 'Receita de controle especial') {
+        B.push({ h: 'Endereço do paciente', lines: [f.endPaciente] });
+        B.push({ h: 'Receituário de controle especial', lines: ['Portaria SVS/MS nº 344/98 — 1ª via: retenção na farmácia · 2ª via: orientação ao paciente'] });
+      }
+    } else if (tipo === 'Atestado') {
+      B.push({ h: 'Atesto', lines: ['Atesto, para os devidos fins (' + f.finalidade + '), que o(a) paciente necessita de afastamento de suas atividades por ' + f.dias + ' dia(s), de ' + this.fmtBR(f.inicio) + ' a ' + this.fmtBR(this.endDate(f.inicio, f.dias)) + '.'] });
+      if (f.incluirCid && f.cid) B.push({ h: 'CID-10', lines: [f.cid + ' (incluído com autorização expressa do paciente)'] });
+      if (f.obs) B.push({ h: 'Observações', lines: [f.obs] });
+    } else {
+      B.push({ h: 'Itens solicitados', lines: f.exames.map((it, i) => (i + 1) + '. ' + it.nome + (it.tuss ? ' — TUSS ' + it.tuss : '') + ' — ' + it.qtd + ' un.' + (it.lat && it.lat !== '—' ? ' — ' + it.lat : '') + (it.just ? '\n' + it.just : '')) });
+      if (f.indicacao) B.push({ h: 'Indicação clínica', lines: [f.indicacao] });
+      if (f.urgente) B.push({ h: 'Caráter', lines: ['URGENTE'] });
+      if (f.obs) B.push({ h: 'Observações', lines: [f.obs] });
+    }
+    return B;
+  }
+  genCode() { const r = () => Math.random().toString(36).slice(2, 6).toUpperCase(); return 'ME-' + r() + '-' + r(); }
+  saveDoc(status) {
+    const w = this.state.wizard, blocos = this.buildBlocos(w.tipo, w.form);
+    const signed = status === 'Assinado';
+    let id = w.docId;
+    this.setState(st => {
+      const docs = st.docs.slice();
+      const patch = { tipo: w.tipo, pid: w.pid, aid: w.aid, date: this.iso(this.today), status, blocos };
+      if (signed) { patch.codigo = this.genCode(); patch.signedAt = this.fmtBR(this.iso(this.today)) + ' ' + new Date().toTimeString().slice(0, 5); }
+      const ix = docs.findIndex(d => d.id === id);
+      if (ix >= 0) docs[ix] = Object.assign({}, docs[ix], patch);
+      else { id = 'd' + (st.seq + 1); docs.push(Object.assign({ id, codigo: '', signedAt: '' }, patch)); }
+      return { docs, seq: st.seq + 1 };
+    });
+    this.setWiz({ docId: id });
+    return id;
+  }
+  wizNext() {
+    const w = this.state.wizard, f = w.form;
+    if (w.step === 1) { if (!w.tipo) return this.setWiz({ err: 'Escolha o tipo de documento.' }); return this.setWiz({ step: 2, err: '' }); }
+    if (w.step === 2) {
+      if (w.tipo.indexOf('Receita') === 0) {
+        if (f.items.some(it => !it.med.trim())) return this.setWiz({ err: 'Informe o medicamento de cada item.' });
+        if (f.items.some(it => !it.pos.trim())) return this.setWiz({ err: 'A posologia é obrigatória em todos os itens.' });
+        if (w.tipo === 'Receita de controle especial' && !f.endPaciente.trim()) return this.setWiz({ err: 'O endereço do paciente é obrigatório na receita de controle especial.' });
+      } else if (w.tipo === 'Atestado') {
+        if (!f.dias || +f.dias < 1) return this.setWiz({ err: 'Informe os dias de afastamento.' });
+      } else {
+        if (f.exames.some(it => !it.nome.trim())) return this.setWiz({ err: 'Informe o nome de cada item solicitado.' });
+      }
+      return this.setWiz({ step: 3, err: '' });
+    }
+    if (w.step === 3) { this.saveDoc('Aguardando assinatura'); return this.setWiz({ step: 4, err: '', signPhase: '' }); }
+  }
+  wizSign() {
+    this.setWiz({ signPhase: 'waiting' });
+    const delay = (this.props && this.props.signDelayMs) || 2600;
+    this._s = setTimeout(() => this.finishSign(), delay);
+  }
+  finishSign() {
+    if (this._s) clearTimeout(this._s);
+    if (!this.state.wizard || this.state.wizard.signPhase !== 'waiting') return;
+    this.saveDoc('Assinado');
+    this.setWiz({ signPhase: 'signed' });
+    this.toast('Documento assinado com certificado ICP-Brasil.');
+  }
+  failSign() {
+    if (this._s) clearTimeout(this._s);
+    this.saveDoc('Rascunho');
+    this.setWiz({ signPhase: 'failed' });
+    this.toast('Autorização expirou. Documento voltou para rascunho.', 'err');
+  }
+  cancelDoc(id) {
+    this.setState(st => ({ docs: st.docs.map(d => d.id === id ? Object.assign({}, d, { status: 'Cancelado' }) : d) }));
+    this.toast('Documento cancelado. Motivo registrado no histórico.', 'err');
+  }
+  tplPreview(corpo) {
+    const s = this.state, p = s.patients[0];
+    let out = corpo || '';
+    out = out.replace(/\{\{#receita\.itens\}\}([\s\S]*?)\{\{\/receita\.itens\}\}/g, (m, blk) => {
+      return [['Amoxicilina 500mg', 'cápsula', '21 cápsulas', '1 cápsula de 8 em 8 horas'], ['Dipirona 500mg', 'comprimido', '10 comprimidos', '1 comprimido se dor']]
+        .map(it => blk.replace(/\{\{item\.medicamento\}\}/g, it[0]).replace(/\{\{item\.apresentacao\}\}/g, it[1]).replace(/\{\{item\.quantidade\}\}/g, it[2]).replace(/\{\{item\.posologia\}\}/g, it[3])).join('');
+    });
+    out = out.replace(/\{\{#exames\.itens\}\}([\s\S]*?)\{\{\/exames\.itens\}\}/g, (m, blk) => {
+      return [['Hemograma completo', '40304361', '1 un.'], ['Glicemia de jejum', '40301630', '1 un.']]
+        .map(it => blk.replace(/\{\{item\.nome\}\}/g, it[0]).replace(/\{\{item\.tuss\}\}/g, it[1]).replace(/\{\{item\.quantidade\}\}/g, it[2])).join('');
+    });
+    const map = {
+      '{{paciente.nome}}': p.nome, '{{paciente.cpf}}': p.cpf, '{{paciente.endereco}}': p.end,
+      '{{medico.nome}}': s.doctor.nome, '{{medico.crm}}': s.doctor.crm, '{{medico.especialidade}}': s.doctor.esp,
+      '{{clinica.nome}}': s.doctor.clinica, '{{receita.instrucoes}}': 'Manter hidratação.',
+      '{{atestado.dias}}': '3', '{{atestado.inicio}}': this.fmtBR(this.iso(this.today)), '{{atestado.finalidade}}': 'Justificativa de ausência',
+      '{{exames.indicacao}}': 'Quadro gripal com 5 dias de evolução.', '{{data.hoje}}': this.fmtBR(this.iso(this.today))
+    };
+    Object.keys(map).forEach(k => { out = out.split(k).join(map[k]); });
+    return out;
+  }
+
+  renderVals() {
+    const s = this.state, W = s.w;
+    const isMobile = W < 768, isTablet = W >= 768 && W < 1024;
+    const collapsed = isTablet ? true : s.collapsed;
+    const labelDisplay = (isMobile || !collapsed) ? 'block' : 'none';
+    const routeName = s.route.name;
+    const emitenteMissing = !s.doctor.emitente.endereco || !s.doctor.emitente.telefone;
+
+    const navDef = [
+      ['inicio', 'Início', 'home'], ['agenda', 'Agenda', 'cal'], ['consultas', 'Consultas', 'clip'],
+      ['documentos', 'Documentos', 'doc'], ['modelos', 'Modelos', 'layers'], ['acessos', 'Acessos', 'key'], ['perfil', 'Perfil', 'user']
+    ];
+    const pendingCount = s.appts.filter(a => a.status === 'Agendada').length;
+    const signCount = s.docs.filter(d => d.status === 'Aguardando assinatura').length;
+    const badges = { consultas: pendingCount, documentos: signCount };
+    const nav = navDef.map(([id, name, ic]) => {
+      const active = routeName === id || (id === 'consultas' && routeName === 'consulta');
+      const b = badges[id] || 0;
+      return {
+        id, name, icon: this.icon(ic), go: () => this.nav(id), fw: active ? 600 : 500,
+        bg: active ? '#FFECEA' : 'transparent', fg: active ? '#EB5057' : '#211E1C',
+        badge: b, badgeDisplay: (b && labelDisplay === 'block') ? 'inline-flex' : 'none'
+      };
+    });
+    const bottomNav = ['inicio', 'agenda', 'consultas', 'documentos'].map(id => {
+      const d = navDef.find(x => x[0] === id);
+      const active = routeName === id || (id === 'consultas' && routeName === 'consulta');
+      return { id, name: d[1], icon: this.icon(d[2], 21), go: () => this.nav(id), fg: active ? '#EB5057' : '#79716B' };
+    });
+
+    const upcoming = s.appts
+      .filter(a => a.date >= this.iso(this.today) && a.status !== 'Cancelada' && a.status !== 'Concluída')
+      .sort((x, y) => (x.date + x.hora).localeCompare(y.date + y.hora)).slice(0, 5)
+      .map(a => {
+        const p = s.patients.find(x => x.id === a.pid), c = this.chip(a.status);
+        const isToday = a.date === this.iso(this.today);
+        return {
+          id: a.id, nome: p.nome, iniciais: this.ini(p.nome), tipo: a.tipo, status: a.status,
+          quando: (isToday ? 'Hoje' : this.fmtBR(a.date)) + ' · ' + a.hora,
+          chipBg: c[0], chipFg: c[1], open: () => this.nav('consulta', { id: a.id })
+        };
+      });
+    const pending = s.appts.filter(a => a.status === 'Agendada').map(a => {
+      const p = s.patients.find(x => x.id === a.pid);
+      return { id: a.id, nome: p.nome, quando: this.fmtBR(a.date) + ' · ' + a.hora, open: () => this.nav('consulta', { id: a.id }) };
+    });
+    const toSign = s.docs.filter(d => d.status === 'Aguardando assinatura' || d.status === 'Rascunho').map(d => {
+      const p = s.patients.find(x => x.id === d.pid);
+      return { id: d.id, tipo: d.tipo, paciente: p.nome, open: () => this.nav('documentos') };
+    });
+
+    const hoje = s.appts.filter(a => a.date === this.iso(this.today) && a.status !== 'Cancelada').length;
+    const semana = s.docs.filter(d => d.tipo.indexOf('Receita') === 0).length;
+    const kpis = [
+      { label: 'Consultas hoje', value: hoje, unit: 'agendadas', color: '#211E1C', go: () => this.nav('agenda') },
+      { label: 'Aguardando confirmação', value: pendingCount, unit: 'pacientes', color: '#F59E0B', go: () => this.nav('consultas') },
+      { label: 'Documentos a assinar', value: signCount, unit: 'pendentes', color: '#EB5057', go: () => this.nav('documentos') },
+      { label: 'Receitas na semana', value: semana, unit: 'emitidas', color: '#0E7E70', go: () => this.nav('documentos') }
+    ];
+
+    const hour = new Date().getHours();
+    const greeting = (hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite') + ', ' + s.doctor.nome.split(' ')[1] + '.';
+    const dias = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+    const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+
+    const ctx = { isMobile, W, emitenteMissing };
+    return Object.assign({
+      // layout
+      isMobile, labelDisplay, labelDisplayTop: isMobile ? 'none' : 'block',
+      sbW: isMobile ? 284 : (collapsed ? 76 : 268),
+      sbT: isMobile ? (s.sidebarOpen ? 'translateX(0)' : 'translateX(-105%)') : 'translateX(0)',
+      mainML: isMobile ? 0 : (collapsed ? 76 : 268),
+      mainPad: isMobile ? '18px' : '30px',
+      form2: isMobile ? '1fr' : 'repeat(2,minmax(0,1fr))',
+      form3: isMobile ? '1fr' : 'repeat(3,minmax(0,1fr))',
+      form4: isMobile ? '1fr' : 'repeat(4,minmax(0,1fr))',
+      weekCols: isMobile ? '1fr' : 'repeat(7,minmax(0,1fr))',
+      sheetAlign: isMobile ? 'flex-end' : 'center',
+      sheetRadius: isMobile ? '28px 28px 0 0' : '24px',
+      sheetPad: isMobile ? '0' : '28px 20px',
+      sheetMaxH: isMobile ? '94vh' : '88vh',
+      overlayDisplay: (isMobile && s.sidebarOpen) ? 'block' : 'none',
+      bottomBarDisplay: isMobile ? 'flex' : 'none',
+      bottomPad: isMobile ? 76 : 20,
+      searchDisplay: isMobile ? 'none' : 'block',
+      authCols: W >= 1024 ? '1fr 1fr' : '1fr',
+      authArtDisplay: W >= 1024 ? 'flex' : 'none',
+      dashCols: W >= 1100 ? '1.35fr 1fr' : '1fr',
+      menuIcon: this.icon('menu'), bellIcon: this.icon('bell'),
+      // views
+      vAuth: s.view === 'login' || s.view === '2fa', vLogin: s.view === 'login', v2fa: s.view === '2fa',
+      vApp: s.view === 'app', vPublic: s.view === 'public',
+      loading: s.loading,
+      rInicio: !s.loading && routeName === 'inicio',
+      // auth
+      email: s.email, senha: s.senha, code: s.code, errEmail: s.errEmail, errSenha: s.errSenha, errCode: s.errCode,
+      loginBtn: s.busy === 'login' ? 'Entrando…' : 'Entrar',
+      verifyBtn: s.busy === 'code' ? 'Verificando…' : 'Verificar e entrar',
+      hEmail: e => this.setState({ email: e.target.value }),
+      hSenha: e => this.setState({ senha: e.target.value }),
+      hCode: e => this.setState({ code: e.target.value.replace(/\D/g, '').slice(0, 6) }),
+      hLogin: () => this.doLogin(),
+      hVerify: () => this.doVerify2fa(),
+      hResend: () => this.toast('Novo código enviado (simulado).'),
+      hBackLogin: () => this.setState({ view: 'login', code: '', errCode: '' }),
+      hForgot: () => this.toast('Enviamos um link de recuperação (simulado).'),
+      hGoogle: () => { this.setState({ busy: 'login' }); setTimeout(() => this.setState({ busy: '', view: '2fa' }), 600); },
+      // shell
+      doctorShort: s.doctor.nome, search: s.search,
+      hSearch: e => this.setState({ search: e.target.value }),
+      hSearchKey: e => { if (e.key === 'Enter') this.nav('documentos'); },
+      toggleNav: () => isMobile ? this.setState({ sidebarOpen: !s.sidebarOpen }) : this.setState({ collapsed: !s.collapsed }),
+      closeSidebar: () => this.setState({ sidebarOpen: false }),
+      nav, bottomNav,
+      goPerfil: () => this.nav('perfil'), goAgenda: () => this.nav('agenda'),
+      goDocumentos: () => this.nav('documentos'), goConsultas: () => this.nav('consultas'),
+      goAcessos: () => this.nav('acessos'),
+      goPublic: () => this.setState({ view: 'public', verifFrom: s.view, verifState: '', verifCode: '' }),
+      backFromPublic: () => this.setState({ view: s.verifFrom === 'app' ? 'app' : 'login' }),
+      backFromPublicLabel: s.verifFrom === 'app' ? 'Voltar ao painel' : 'Voltar ao login',
+      // dashboard
+      todayLabel: dias[new Date().getDay()] + ', ' + new Date().getDate() + ' de ' + meses[new Date().getMonth()],
+      greeting, kpis, upcoming, noUpcoming: upcoming.length === 0, pending, toSign, noToSign: toSign.length === 0,
+      emitenteMissing,
+      // verificação pública
+      verifCode: s.verifCode, verif: s.verif,
+      verifLoading: s.verifState === 'loading', verifOk: s.verifState === 'ok', verifFail: s.verifState === 'fail',
+      hVerifCode: e => this.setState({ verifCode: e.target.value }),
+      doVerify: () => this.doVerifyCode(),
+      // toast
+      hasToast: !!s.toast, toastMsg: s.toast ? s.toast.msg : '',
+      toastDot: s.toast && s.toast.kind === 'err' ? '#DC2626' : '#1EA896'
+    }, this.rvRoutes(), this.rvAgenda(ctx), this.rvConsultas(ctx), this.rvConsulta(ctx), this.rvDocs(ctx), this.rvWizard(ctx), this.rvModelos(ctx), this.rvAcessos(ctx), this.rvPerfil(ctx));
+  }
+
+  rvRoutes() {
+    const s = this.state, r = s.route.name, f = n => !s.loading && r === n;
+    return { rAgenda: f('agenda'), rConsultas: f('consultas'), rConsulta: f('consulta'), rDocumentos: f('documentos'), rModelos: f('modelos'), rAcessos: f('acessos'), rPerfil: f('perfil') };
+  }
+
+  apptRow(a) {
+    const s = this.state, p = s.patients.find(x => x.id === a.pid), c = this.chip(a.status);
+    const isToday = a.date === this.iso(this.today);
+    return {
+      id: a.id, nome: p.nome, iniciais: this.ini(p.nome), tipo: a.tipo, status: a.status, hora: a.hora,
+      quando: (isToday ? 'Hoje' : this.fmtBR(a.date)) + ' · ' + a.hora, data: this.fmtBR(a.date),
+      chipBg: c[0], chipFg: c[1], barra: a.tipo === 'Teleconsulta' ? '#1EA896' : '#EB5057',
+      open: () => this.nav('consulta', { id: a.id })
+    };
+  }
+
+  rvAgenda(ctx) {
+    const s = this.state, dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const tabs = [['consultas', 'Consultas'], ['horarios', 'Meus horários'], ['bloqueios', 'Bloqueios']].map(([id, label]) => {
+      const active = s.agendaTab === id;
+      return { id, label, bg: active ? '#211E1C' : '#fff', fg: active ? '#fff' : '#79716B', bd: active ? '#211E1C' : '#EFE8E3', go: () => this.setState({ agendaTab: id }) };
+    });
+    const dow = this.today.getDay(), monOff = dow === 0 ? -6 : 1 - dow;
+    const week = [0, 1, 2, 3, 4, 5, 6].map(i => {
+      const d = this.addD(monOff + i), isoS = this.iso(d);
+      const list = s.appts.filter(a => a.date === isoS).sort((x, y) => x.hora.localeCompare(y.hora)).map(a => this.apptRow(a));
+      return {
+        key: isoS, label: dias[d.getDay()], num: d.getDate(), appts: list, empty: list.length === 0,
+        isToday: isoS === this.iso(this.today), headFg: isoS === this.iso(this.today) ? '#EB5057' : '#79716B',
+        headBg: isoS === this.iso(this.today) ? '#FFECEA' : '#FBF6F3'
+      };
+    });
+    const wins = s.windows.slice().sort((a, b) => a.dow - b.dow || a.ini.localeCompare(b.ini)).map(w => ({
+      id: w.id, dia: dias[w.dow], faixa: w.ini + ' — ' + w.fim, slot: w.slot + ' min',
+      qtd: Math.floor((this.toMin(w.fim) - this.toMin(w.ini)) / (+w.slot || 30)) + ' slots',
+      del: () => { this.setState(st => ({ windows: st.windows.filter(x => x.id !== w.id) })); this.toast('Janela removida.'); }
+    }));
+    const blocos = s.blocks.slice().sort((a, b) => a.date.localeCompare(b.date)).map(b => ({
+      id: b.id, data: this.fmtBR(b.date), faixa: b.ini + ' — ' + b.fim, motivo: b.motivo || 'Sem motivo',
+      del: () => { this.setState(st => ({ blocks: st.blocks.filter(x => x.id !== b.id) })); this.toast('Bloqueio removido.'); }
+    }));
+    const slotDays = [0, 1, 2, 3, 4, 5, 6].map(i => {
+      const d = this.addD(i), active = s.slotDay === i;
+      return { key: i, label: (i === 0 ? 'Hoje' : dias[d.getDay()] + ' ' + d.getDate()), bg: active ? '#FFECEA' : '#fff', fg: active ? '#EB5057' : '#79716B', bd: active ? '#EB5057' : '#EFE8E3', go: () => this.setState({ slotDay: i }) };
+    });
+    const slots = this.freeSlots(s.slotDay).map(t => ({ t }));
+    const sd = this.addD(s.slotDay);
+    return {
+      agTabs: tabs, agIsConsultas: s.agendaTab === 'consultas', agIsHorarios: s.agendaTab === 'horarios', agIsBlocos: s.agendaTab === 'bloqueios',
+      agWeek: week, agWins: wins, agNoWins: wins.length === 0, agBlocos: blocos, agNoBlocos: blocos.length === 0,
+      agSlotDays: slotDays, agSlots: slots, agNoSlots: slots.length === 0,
+      agSlotLabel: this.fmtBR(this.iso(sd)) + ' · ' + ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'][sd.getDay()],
+      winDow: String(s.win.dow), winIni: s.win.ini, winFim: s.win.fim, winSlot: s.win.slot,
+      hWinDow: e => this.setState(st => ({ win: Object.assign({}, st.win, { dow: +e.target.value }) })),
+      hWinIni: e => this.setState(st => ({ win: Object.assign({}, st.win, { ini: e.target.value }) })),
+      hWinFim: e => this.setState(st => ({ win: Object.assign({}, st.win, { fim: e.target.value }) })),
+      hWinSlot: e => this.setState(st => ({ win: Object.assign({}, st.win, { slot: e.target.value }) })),
+      addWin: () => {
+        const w = this.state.win;
+        if (this.toMin(w.fim) <= this.toMin(w.ini)) return this.toast('O horário final deve ser maior que o inicial.', 'err');
+        this.setState(st => ({ windows: st.windows.concat([{ id: 'w' + (st.seq + 1), dow: w.dow, ini: w.ini, fim: w.fim, slot: +w.slot || 30 }]), seq: st.seq + 1 }));
+        this.toast('Janela semanal criada.');
+      },
+      blkDate: s.blk.date, blkIni: s.blk.ini, blkFim: s.blk.fim, blkMotivo: s.blk.motivo,
+      hBlkDate: e => this.setState(st => ({ blk: Object.assign({}, st.blk, { date: e.target.value }) })),
+      hBlkIni: e => this.setState(st => ({ blk: Object.assign({}, st.blk, { ini: e.target.value }) })),
+      hBlkFim: e => this.setState(st => ({ blk: Object.assign({}, st.blk, { fim: e.target.value }) })),
+      hBlkMotivo: e => this.setState(st => ({ blk: Object.assign({}, st.blk, { motivo: e.target.value }) })),
+      addBlk: () => {
+        const b = this.state.blk;
+        if (this.toMin(b.fim) <= this.toMin(b.ini)) return this.toast('O horário final deve ser maior que o inicial.', 'err');
+        this.setState(st => ({ blocks: st.blocks.concat([{ id: 'b' + (st.seq + 1), date: b.date, ini: b.ini, fim: b.fim, motivo: b.motivo }]), seq: st.seq + 1 }));
+        this.toast('Bloqueio criado. Os horários saíram da agenda.');
+      }
+    };
+  }
+
+  rvConsultas(ctx) {
+    const s = this.state;
+    const filters = ['Todas', 'Hoje', 'Aguardando confirmação', 'Concluídas'].map(f => {
+      const active = s.csFilter === f;
+      return { f, bg: active ? '#211E1C' : '#fff', fg: active ? '#fff' : '#79716B', bd: active ? '#211E1C' : '#EFE8E3', go: () => this.setState({ csFilter: f }) };
+    });
+    let list = s.appts.slice().sort((x, y) => (y.date + y.hora).localeCompare(x.date + x.hora));
+    if (s.csFilter === 'Hoje') list = list.filter(a => a.date === this.iso(this.today));
+    if (s.csFilter === 'Aguardando confirmação') list = list.filter(a => a.status === 'Agendada');
+    if (s.csFilter === 'Concluídas') list = list.filter(a => a.status === 'Concluída');
+    if (s.search.trim()) { const q = s.search.toLowerCase(); list = list.filter(a => (s.patients.find(p => p.id === a.pid) || {}).nome.toLowerCase().indexOf(q) >= 0); }
+    return {
+      csFilters: filters, csRows: list.map(a => this.apptRow(a)), csEmpty: list.length === 0,
+      csCols: ctx.isMobile ? '1fr' : '1.6fr 1fr 1fr 150px'
+    };
+  }
+
+  qrCells(seed) {
+    const str = (seed || 'ME') + 'me-verifica';
+    let h = 0; for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) & 0xffff;
+    return Array.from({ length: 36 }, (_, i) => { h = (h * 1103515245 + 12345 + i * 7) & 0xffff; return { bg: (h >> 5) % 3 === 0 ? '#211E1C' : '#FFFFFF' }; });
+  }
+  docPreview(d) {
+    const s = this.state, p = s.patients.find(x => x.id === d.pid) || s.patients[0];
+    return {
+      titulo: d.tipo, medico: s.doctor.nome, crm: s.doctor.crm + ' · ' + s.doctor.rqe + ' · ' + s.doctor.esp,
+      clinica: s.doctor.clinica, endereco: s.doctor.emitente.endereco || 'Endereço profissional não informado',
+      telefone: s.doctor.emitente.telefone || '—',
+      paciente: p.nome, pacienteInfo: p.idade + ' anos · CPF ' + p.cpf, data: this.fmtBR(d.date || this.iso(this.today)),
+      blocos: d.blocos, codigo: d.codigo || 'gerado na assinatura', status: d.status || 'Rascunho',
+      signedAt: d.signedAt || '', assinado: d.status === 'Assinado', qr: this.qrCells(d.codigo)
+    };
+  }
+  rvDocs(ctx) {
+    const s = this.state;
+    const tipos = ['Todos', 'Receita simples', 'Receita de controle especial', 'Atestado', 'Pedido de exame', 'Solicitação de procedimento'];
+    const status = ['Todos', 'Rascunho', 'Aguardando assinatura', 'Assinado', 'Cancelado'];
+    let list = s.docs.slice().sort((a, b) => b.date.localeCompare(a.date));
+    if (s.dtTipo !== 'Todos') list = list.filter(d => d.tipo === s.dtTipo);
+    if (s.dtStatus !== 'Todos') list = list.filter(d => d.status === s.dtStatus);
+    if (s.search.trim()) { const q = s.search.toLowerCase(); list = list.filter(d => (s.patients.find(p => p.id === d.pid) || {}).nome.toLowerCase().indexOf(q) >= 0); }
+    const rows = list.map(d => {
+      const p = s.patients.find(x => x.id === d.pid), c = this.chip(d.status);
+      return { id: d.id, tipo: d.tipo, paciente: p.nome, data: this.fmtBR(d.date), status: d.status, chipBg: c[0], chipFg: c[1], codigo: d.codigo || '—', open: () => this.setState({ docModal: d.id }) };
+    });
+    const md = s.docs.find(d => d.id === s.docModal);
+    return {
+      dtTipos: tipos.map(t => ({ t, bg: s.dtTipo === t ? '#211E1C' : '#fff', fg: s.dtTipo === t ? '#fff' : '#79716B', bd: s.dtTipo === t ? '#211E1C' : '#EFE8E3', go: () => this.setState({ dtTipo: t }) })),
+      dtStatuses: status.map(t => ({ t, bg: s.dtStatus === t ? '#211E1C' : '#fff', fg: s.dtStatus === t ? '#fff' : '#79716B', bd: s.dtStatus === t ? '#211E1C' : '#EFE8E3', go: () => this.setState({ dtStatus: t }) })),
+      dtRows: rows, dtEmpty: rows.length === 0, dtCols: ctx.isMobile ? '1fr' : '1.6fr 1.1fr .8fr 170px',
+      dtModalOpen: !!md, dtDoc: md ? this.docPreview(md) : null,
+      dtClose: () => this.setState({ docModal: '' }),
+      dtDownload: () => this.toast('PDF assinado gerado (simulado).'),
+      dtCancel: () => { if (md) { this.cancelDoc(md.id); this.setState({ docModal: '' }); } },
+      dtVerify: () => { if (md) this.setState({ view: 'public', verifFrom: 'app', verifCode: md.codigo, verifState: '', docModal: '' }); },
+      dtCanSign: !!md && md.status !== 'Assinado' && md.status !== 'Cancelado',
+      dtIsSigned: !!md && md.status === 'Assinado'
+    };
+  }
+
+  rvConsulta(ctx) {
+    const s = this.state, aid = (s.route.params || {}).id, a = s.appts.find(x => x.id === aid);
+    if (!a) return { cdOk: false, cd: null };
+    const p = s.patients.find(x => x.id === a.pid), c = this.chip(a.status);
+    const so = s.soap[aid] || { s: '', o: '', a: '', p: '', signed: false };
+    const confirmed = a.status === 'Confirmada' || a.status === 'Concluída';
+    const docs = s.docs.filter(d => d.aid === aid).map(d => {
+      const cc = this.chip(d.status);
+      return { id: d.id, tipo: d.tipo, data: this.fmtBR(d.date), status: d.status, chipBg: cc[0], chipFg: cc[1], open: () => { this.setState({ docModal: d.id }); this.nav('documentos'); } };
+    });
+    return {
+      cdOk: true,
+      cd: {
+        nome: p.nome, iniciais: this.ini(p.nome), info: p.idade + ' anos · CPF ' + p.cpf,
+        quando: this.fmtBR(a.date) + ' · ' + a.hora, tipo: a.tipo, status: a.status, chipBg: c[0], chipFg: c[1],
+        consentLabel: p.consent ? 'Consentimento ativo' : 'Sem consentimento'
+      },
+      cdConfirmed: confirmed, cdUnconfirmed: !confirmed,
+      cdFormOpacity: confirmed ? 1 : 0.55, soLock: !confirmed || so.signed,
+      cdCanEdit: confirmed && !so.signed,
+      cdConsentBg: p.consent ? '#E5F4F0' : '#FEF6E7', cdConsentFg: p.consent ? '#0E7E70' : '#B45309',
+      cdIsTele: a.tipo === 'Teleconsulta', cdConsent: p.consent, cdNoConsent: !p.consent,
+      cdDocs: docs, cdNoDocs: docs.length === 0,
+      cdBack: () => this.nav('consultas'),
+      cdConfirmar: () => this.setApptStatus(aid, 'Confirmada'),
+      cdConcluir: () => this.setApptStatus(aid, 'Concluída'),
+      cdCancelar: () => this.setApptStatus(aid, 'Cancelada'),
+      cdRoom: () => this.toast('Abrindo sala de teleconsulta (simulado).'),
+      cdEmitir: () => this.openWizard(aid),
+      cdReqAccess: () => { this.setState({ acc: { cpf: p.cpf, secoes: ['Informações médicas'], msg: '', sent: false } }); this.nav('acessos'); },
+      soS: so.s, soO: so.o, soA: so.a, soP: so.p, soSigned: so.signed, soDraft: !so.signed,
+      hSoS: e => this.setSoap(aid, 's', e.target.value), hSoO: e => this.setSoap(aid, 'o', e.target.value),
+      hSoA: e => this.setSoap(aid, 'a', e.target.value), hSoP: e => this.setSoap(aid, 'p', e.target.value),
+      soSave: () => this.toast('Rascunho do resumo salvo.'),
+      soSign: () => this.signSoap(aid)
+    };
+  }
+
+  rvWizard(ctx) {
+    const s = this.state, w = s.wizard;
+    if (!w) return { wzOpen: false };
+    const tipos = ['Receita simples', 'Receita de controle especial', 'Atestado', 'Pedido de exame', 'Solicitação de procedimento'].map(t => {
+      const active = w.tipo === t;
+      return { t, bg: active ? '#FFECEA' : '#fff', bd: active ? '#EB5057' : '#EFE8E3', fg: active ? '#EB5057' : '#211E1C', go: () => this.setWiz({ tipo: t, err: '' }) };
+    });
+    const modelos = s.templates.filter(t => !w.tipo || t.tipo === w.tipo).map(t => ({
+      id: t.id, nome: t.nome, bd: w.modelo === t.id ? '#EB5057' : '#EFE8E3',
+      go: () => this.setWiz({ modelo: w.modelo === t.id ? '' : t.id })
+    }));
+    const f = w.form;
+    const blocked = w.tipo === 'Receita de controle especial' && ctx.emitenteMissing;
+    const steps = [1, 2, 3, 4].map(n => ({
+      n, label: ['Tipo', 'Conteúdo', 'Pré-visualização', 'Assinatura'][n - 1],
+      bg: w.step > n ? '#0E7E70' : w.step === n ? '#EB5057' : '#FBF6F3',
+      fg: w.step >= n ? '#fff' : '#79716B', lfg: w.step === n ? '#211E1C' : '#79716B'
+    }));
+    const items = f.items.map((it, i) => ({
+      i, n: i + 1, med: it.med, apres: it.apres, qtd: it.qtd, pos: it.pos, dur: it.dur, obs: it.obs,
+      hMed: e => this.setRow('items', i, 'med', e.target.value), hApres: e => this.setRow('items', i, 'apres', e.target.value),
+      hQtd: e => this.setRow('items', i, 'qtd', e.target.value), hPos: e => this.setRow('items', i, 'pos', e.target.value),
+      hDur: e => this.setRow('items', i, 'dur', e.target.value), hObs: e => this.setRow('items', i, 'obs', e.target.value),
+      del: () => this.delRow('items', i), up: () => this.moveRow('items', i, -1), down: () => this.moveRow('items', i, 1)
+    }));
+    const exames = f.exames.map((it, i) => ({
+      i, n: i + 1, nome: it.nome, tuss: it.tuss, qtd: it.qtd, lat: it.lat, just: it.just,
+      hNome: e => this.setRow('exames', i, 'nome', e.target.value), hTuss: e => this.setRow('exames', i, 'tuss', e.target.value),
+      hQtd: e => this.setRow('exames', i, 'qtd', e.target.value), hLat: e => this.setRow('exames', i, 'lat', e.target.value),
+      hJust: e => this.setRow('exames', i, 'just', e.target.value),
+      del: () => this.delRow('exames', i), up: () => this.moveRow('exames', i, -1), down: () => this.moveRow('exames', i, 1)
+    }));
+    const stored = s.docs.find(d => d.id === w.docId);
+    const prev = this.docPreview({ tipo: w.tipo || 'Documento', pid: w.pid, date: this.iso(this.today), blocos: w.tipo ? this.buildBlocos(w.tipo, f) : [], status: stored ? stored.status : 'Rascunho', codigo: stored ? stored.codigo : '', signedAt: stored ? stored.signedAt : '' });
+    return {
+      wzOpen: true, wzSteps: steps, wzErr: w.err, wzHasErr: !!w.err, wzTipoLabel: w.tipo || 'Novo documento',
+      wzStep1: w.step === 1, wzStep2: w.step === 2 && !blocked, wzStep3: w.step === 3, wzStep4: w.step === 4,
+      wzBlocked: w.step === 2 && blocked,
+      wzTipos: tipos, wzModelos: modelos,
+      wzIsReceita: w.tipo.indexOf('Receita') === 0, wzIsEspecial: w.tipo === 'Receita de controle especial',
+      wzIsAtestado: w.tipo === 'Atestado', wzIsExame: w.tipo === 'Pedido de exame' || w.tipo === 'Solicitação de procedimento',
+      wzItems: items, wzExames: exames, wzPrev: prev,
+      wzInstrucoes: f.instrucoes, wzEndPaciente: f.endPaciente, wzInicio: f.inicio, wzDias: f.dias,
+      wzFim: this.fmtBR(this.endDate(f.inicio, f.dias)), wzFinalidade: f.finalidade, wzCid: f.cid, wzObs: f.obs,
+      wzIndicacao: f.indicacao,
+      wzCidOn: f.incluirCid, wzCidBg: f.incluirCid ? '#EB5057' : '#EFE8E3', wzCidX: f.incluirCid ? '22px' : '2px',
+      wzUrgOn: f.urgente, wzUrgBg: f.urgente ? '#EB5057' : '#EFE8E3', wzUrgX: f.urgente ? '22px' : '2px',
+      hWzInstr: e => this.setForm({ instrucoes: e.target.value }), hWzEnd: e => this.setForm({ endPaciente: e.target.value }),
+      hWzInicio: e => this.setForm({ inicio: e.target.value }), hWzDias: e => this.setForm({ dias: e.target.value }),
+      hWzFinalidade: e => this.setForm({ finalidade: e.target.value }), hWzCid: e => this.setForm({ cid: e.target.value }),
+      hWzObs: e => this.setForm({ obs: e.target.value }), hWzIndicacao: e => this.setForm({ indicacao: e.target.value }),
+      wzToggleCid: () => this.setForm({ incluirCid: !f.incluirCid }), wzToggleUrg: () => this.setForm({ urgente: !f.urgente }),
+      wzAddItem: () => this.addRow('items'), wzAddExame: () => this.addRow('exames'),
+      wzFill: () => this.fillExample(),
+      wzNext: () => this.wizNext(), wzBack: () => this.setWiz({ step: Math.max(1, w.step - 1), err: '' }),
+      wzClose: () => { if (this._s) clearTimeout(this._s); this.setState({ wizard: null }); },
+      wzNextLabel: w.step === 3 ? 'Ir para assinatura' : 'Continuar',
+      wzShowNext: w.step < 4, wzShowBack: w.step > 1 && w.step < 4,
+      wzSaveDraft: () => { this.saveDoc('Rascunho'); this.toast('Documento salvo como rascunho.'); this.setState({ wizard: null }); },
+      wzGoPerfil: () => { this.setState({ wizard: null }); this.nav('perfil'); },
+      wzPhaseIdle: w.step === 4 && (w.signPhase === '' || w.signPhase === 'failed'),
+      wzPhaseWaiting: w.signPhase === 'waiting', wzPhaseSigned: w.signPhase === 'signed',
+      wzFailed: w.signPhase === 'failed',
+      wzSign: () => this.wizSign(), wzApprove: () => this.finishSign(), wzFail: () => this.failSign(),
+      wzDownload: () => this.toast('PDF assinado gerado (simulado).'),
+      wzVerify: () => { const d = s.docs.find(x => x.id === w.docId); this.setState({ wizard: null, view: 'public', verifFrom: 'app', verifCode: d ? d.codigo : '', verifState: '' }); },
+      wzFinish: () => { this.setState({ wizard: null }); this.nav('documentos'); },
+      wzCert: 'e-CPF A3 · ***.***.789-** · VIDaaS'
+    };
+  }
+
+  rvModelos(ctx) {
+    const s = this.state, t = s.tpl;
+    const list = s.templates.map(x => ({
+      id: x.id, nome: x.nome, tipo: x.tipo, padraoDisplay: x.padrao ? 'inline-flex' : 'none',
+      acao: x.padrao ? 'Ver' : 'Editar',
+      open: () => this.setState({ tpl: { id: x.id, nome: x.nome, tipo: x.tipo, corpo: x.corpo, padrao: x.padrao } })
+    }));
+    const placeholders = ['{{paciente.nome}}', '{{paciente.cpf}}', '{{paciente.endereco}}', '{{medico.nome}}', '{{medico.crm}}', '{{medico.especialidade}}', '{{clinica.nome}}', '{{data.hoje}}', '{{receita.instrucoes}}', '{{#receita.itens}} … {{/receita.itens}}', '{{atestado.dias}}', '{{atestado.inicio}}', '{{exames.indicacao}}', '{{#exames.itens}} … {{/exames.itens}}'];
+    return {
+      mdList: list, mdEditing: !!t, mdReadonly: !!t && !!t.padrao, mdCanSave: !!t && !t.padrao,
+      mdNome: t ? t.nome : '', mdTipo: t ? t.tipo : '', mdCorpo: t ? t.corpo : '',
+      mdPreview: t ? this.tplPreview(t.corpo) : '',
+      mdPlaceholders: placeholders.map(p => ({ p })),
+      hMdNome: e => this.setState(st => ({ tpl: Object.assign({}, st.tpl, { nome: e.target.value }) })),
+      hMdTipo: e => this.setState(st => ({ tpl: Object.assign({}, st.tpl, { tipo: e.target.value }) })),
+      hMdCorpo: e => this.setState(st => ({ tpl: Object.assign({}, st.tpl, { corpo: e.target.value }) })),
+      mdNew: () => this.setState({ tpl: { id: '', nome: '', tipo: 'Receita simples', corpo: 'Paciente: {{paciente.nome}}\n\n', padrao: false } }),
+      mdClose: () => this.setState({ tpl: null }),
+      mdSave: () => {
+        const cur = this.state.tpl;
+        if (!cur.nome.trim()) return this.toast('Dê um nome ao modelo.', 'err');
+        this.setState(st => {
+          const arr = st.templates.slice(); const ix = arr.findIndex(x => x.id === cur.id);
+          if (ix >= 0) arr[ix] = Object.assign({}, arr[ix], { nome: cur.nome, tipo: cur.tipo, corpo: cur.corpo });
+          else arr.push({ id: 't' + (st.seq + 1), nome: cur.nome, tipo: cur.tipo, corpo: cur.corpo, padrao: false });
+          return { templates: arr, seq: st.seq + 1, tpl: null };
+        });
+        this.toast('Modelo salvo.');
+      }
+    };
+  }
+
+  rvAcessos(ctx) {
+    const s = this.state, a = s.acc;
+    const secoes = ['Informações médicas', 'Agendamentos', 'Resumos de consulta', 'Pedidos/Documentos', 'Resultados de exame'].map(x => {
+      const on = a.secoes.indexOf(x) >= 0;
+      return {
+        x, bg: on ? '#FFECEA' : '#fff', bd: on ? '#EB5057' : '#EFE8E3', fg: on ? '#EB5057' : '#79716B',
+        go: () => this.setState(st => ({ acc: Object.assign({}, st.acc, { secoes: on ? st.acc.secoes.filter(y => y !== x) : st.acc.secoes.concat([x]) }) }))
+      };
+    });
+    const rows = s.requests.map(r => { const c = this.chip(r.status); return { id: r.id, nome: r.nome, cpf: r.cpf, status: r.status, validade: r.validade, secoes: r.secoes, chipBg: c[0], chipFg: c[1] }; });
+    return {
+      acSecoes: secoes, acCpf: a.cpf, acMsg: a.msg, acSent: a.sent, acForm: !a.sent, acRows: rows,
+      acCols: ctx.isMobile ? '1fr' : '1.4fr 1fr 1.4fr 130px',
+      hAcCpf: e => this.setState(st => ({ acc: Object.assign({}, st.acc, { cpf: e.target.value }) })),
+      hAcMsg: e => this.setState(st => ({ acc: Object.assign({}, st.acc, { msg: e.target.value }) })),
+      acSubmit: () => {
+        const cur = this.state.acc;
+        if (cur.cpf.replace(/\D/g, '').length < 3) return this.toast('Informe o CPF do paciente.', 'err');
+        if (!cur.secoes.length) return this.toast('Escolha ao menos uma seção.', 'err');
+        this.setState(st => ({
+          requests: [{ id: 'r' + (st.seq + 1), nome: 'Paciente ' + cur.cpf, cpf: cur.cpf, status: 'Pendente', validade: '—', secoes: cur.secoes.join(', ') }].concat(st.requests),
+          seq: st.seq + 1, acc: Object.assign({}, st.acc, { sent: true })
+        }));
+        this.toast('Solicitação enviada ao paciente.');
+      },
+      acReset: () => this.setState({ acc: { cpf: '', secoes: [], msg: '', sent: false } })
+    };
+  }
+
+  rvPerfil(ctx) {
+    const s = this.state, d = s.doctor;
+    const set = k => e => this.setState(st => ({ doctor: Object.assign({}, st.doctor, { [k]: e.target.value }) }));
+    const setE = k => e => this.setState(st => ({ doctor: Object.assign({}, st.doctor, { emitente: Object.assign({}, st.doctor.emitente, { [k]: e.target.value }) }) }));
+    return {
+      pfNome: d.nome, pfCrm: d.crm, pfRqe: d.rqe, pfEsp: d.esp, pfClinica: d.clinica, pfPreco: d.preco,
+      pfEnd: d.emitente.endereco, pfTel: d.emitente.telefone,
+      hPfNome: set('nome'), hPfCrm: set('crm'), hPfRqe: set('rqe'), hPfEsp: set('esp'), hPfClinica: set('clinica'), hPfPreco: set('preco'),
+      hPfEnd: setE('endereco'), hPfTel: setE('telefone'),
+      pfSave: () => this.toast(ctx.emitenteMissing ? 'Dados salvos. Complete o emitente para controle especial.' : 'Dados de emitente salvos. Você já pode emitir controle especial.'),
+      pfFillExample: () => this.setState(st => ({ doctor: Object.assign({}, st.doctor, { emitente: { endereco: 'Av. Dr. Antônio Gomes de Barros, 145, sala 802 — Jatiúca, Maceió/AL', telefone: '(82) 3025-4477' } }) })),
+      pfLogout: () => this.setState({ view: 'login', senha: '', code: '', route: { name: 'inicio' } }),
+      pfEmitenteOk: !ctx.emitenteMissing,
+      pfEmitBd: ctx.emitenteMissing ? '#F8D7D3' : '#EFE8E3',
+      pfEmitBg: ctx.emitenteMissing ? '#FFECEA' : '#E5F4F0',
+      pfEmitFg: ctx.emitenteMissing ? '#EB5057' : '#0E7E70',
+      pfEmitLabel: ctx.emitenteMissing ? 'incompleto' : 'completo'
+    };
+  }
+}
+</script>
+</body>
+</html>

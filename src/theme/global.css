@@ -1,0 +1,73 @@
+/* Global — extraído do <helmet> do protótipo. Mantém a identidade visual. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #fffdfb;
+}
+* {
+  box-sizing: border-box;
+}
+#root {
+  min-height: 100vh;
+}
+a {
+  color: #eb5057;
+  text-decoration: none;
+}
+a:hover {
+  color: #c23a45;
+}
+input,
+textarea,
+select,
+button {
+  font-family: Poppins, sans-serif;
+}
+:focus-visible {
+  outline: 2px solid #eb5057;
+  outline-offset: 2px;
+}
+::placeholder {
+  color: #b7ada6;
+}
+@keyframes sh {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+@keyframes up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
