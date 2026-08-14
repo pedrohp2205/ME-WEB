@@ -9,6 +9,10 @@ dist-ssr
 .env
 .env.*
 !.env.example
+# .env.production é versionado de propósito: o build do Cloudflare Pages roda a
+# partir do Git e o Vite injeta VITE_API_BASE_URL em tempo de build. Só contém
+# a URL pública da API — nada sensível.
+!.env.production
 
 # editor / os
 .DS_Store
