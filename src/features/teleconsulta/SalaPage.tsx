@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useWindowWidth } from "@/lib/useWindowWidth";
+import { SoapCard } from "@/features/consultas/SoapCard";
 import * as appointmentsApi from "@/lib/api/appointments";
 import type { Teleconsultation } from "@/lib/api/appointments";
 import { ApiError } from "@/lib/api/errors";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { dateBR, timeLocal } from "@/lib/format/datetime";
 import { color, radius } from "@/theme/tokens";
-import { GhostButton } from "@/app/ui";
+import { GhostButton, PrimaryButton } from "@/app/ui";
+import { useToast } from "@/app/Toast";
 import { loadJitsiApi } from "./jitsi";
 import type { JitsiApi } from "./jitsi";
 
@@ -23,6 +26,9 @@ export function SalaPage() {
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const { doctor } = useAuth();
+  const width = useWindowWidth();
+  const sideBySide = width >= 1024;
+  const { toast } = useToast();
 
   const container = useRef<HTMLDivElement>(null);
   const apiRef = useRef<JitsiApi | null>(null);
@@ -31,6 +37,28 @@ export function SalaPage() {
   const [blocked, setBlocked] = useState<Blocked | null>(null);
   const [error, setError] = useState("");
   const [room, setRoom] = useState<Teleconsultation | null>(null);
+  const [confirmFinish, setConfirmFinish] = useState(false);
+  const [finishing, setFinishing] = useState(false);
+
+  /**
+   * Concluir encerra a chamada junto: uma consulta concluída deixa de ser
+   * SCHEDULED, e a partir daí o backend recusa reabrir a sala.
+   */
+  async function finish() {
+    setFinishing(true);
+    try {
+      await appointmentsApi.complete(id);
+      apiRef.current?.executeCommand("hangup");
+      apiRef.current?.dispose();
+      apiRef.current = null;
+      toast("Consulta concluída.");
+      navigate(`/consultas/${id}`);
+    } catch (e) {
+      toast(e instanceof ApiError ? e.message : "Não foi possível concluir a consulta.", "err");
+      setFinishing(false);
+      setConfirmFinish(false);
+    }
+  }
 
   useEffect(() => {
     let alive = true;
@@ -119,6 +147,25 @@ export function SalaPage() {
             {dateBR(room.startDatetime)} · {timeLocal(room.startDatetime)}–{timeLocal(room.endDatetime)}
           </span>
         )}
+        {room && (
+          <span style={{ marginLeft: "auto", display: "flex", gap: 10, alignItems: "center" }}>
+            {confirmFinish ? (
+              <>
+                <span style={{ fontSize: 13, color: color.textMuted }}>
+                  Encerrar a chamada e concluir? Salve o rascunho antes, se ainda não salvou.
+                </span>
+                <GhostButton onClick={() => setConfirmFinish(false)} disabled={finishing}>
+                  Voltar
+                </GhostButton>
+                <PrimaryButton onClick={finish} disabled={finishing}>
+                  {finishing ? "Concluindo…" : "Confirmar"}
+                </PrimaryButton>
+              </>
+            ) : (
+              <PrimaryButton onClick={() => setConfirmFinish(true)}>Concluir consulta</PrimaryButton>
+            )}
+          </span>
+        )}
       </div>
 
       {phase === "blocked" && blocked && <BlockedCard blocked={blocked} onRetry={() => setPhase("loading")} />}
@@ -150,33 +197,44 @@ export function SalaPage() {
         </div>
       )}
 
-      {(phase === "loading" || phase === "joining") && (
-        <div
-          style={{
-            position: "relative",
-            height: "min(72vh, 720px)",
-            borderRadius: radius.card,
-            overflow: "hidden",
-            background: color.ink,
-          }}
-        >
-          <div ref={container} style={{ position: "absolute", inset: 0 }} />
-          {phase === "loading" && (
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "grid",
-                placeItems: "center",
-                color: "#FFFFFF",
-                fontSize: 14,
-              }}
-            >
-              Conectando à sala…
-            </div>
-          )}
-        </div>
-      )}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: sideBySide ? "minmax(0,1.35fr) minmax(360px,1fr)" : "1fr",
+          gap: 16,
+          alignItems: "start",
+        }}
+      >
+        {(phase === "loading" || phase === "joining") && (
+          <div
+            style={{
+              position: "relative",
+              height: sideBySide ? "min(72vh, 720px)" : "min(52vh, 460px)",
+              borderRadius: radius.card,
+              overflow: "hidden",
+              background: color.ink,
+            }}
+          >
+            <div ref={container} style={{ position: "absolute", inset: 0 }} />
+            {phase === "loading" && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  display: "grid",
+                  placeItems: "center",
+                  color: "#FFFFFF",
+                  fontSize: 14,
+                }}
+              >
+                Conectando à sala…
+              </div>
+            )}
+          </div>
+        )}
+
+        <SoapCard appointmentId={id} canEdit twoCol="1fr" />
+      </div>
     </div>
   );
 }
