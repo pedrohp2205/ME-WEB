@@ -15,7 +15,8 @@ import {
   statusLabel,
   typeLabel,
 } from "@/lib/domain/appointment";
-import { patientInitials, patientLabel } from "@/lib/format/patient";
+import { EntrarNaSalaButton } from "@/features/teleconsulta/EntrarNaSalaButton";
+import { patientDisplayInitials, patientDisplayName } from "@/lib/format/patient";
 import { dateBR, isoDate, timeLocal, today0, addDays } from "@/lib/format/datetime";
 import { color, radius } from "@/theme/tokens";
 
@@ -70,19 +71,6 @@ export function AppointmentDetailModal({
     }
   }
 
-  async function openRoom() {
-    setBusy("room");
-    try {
-      const tele = await appointmentsApi.getTeleconsultation(a.id);
-      window.open(tele.roomUrl, "_blank", "noopener,noreferrer");
-      toast("Sala de teleconsulta aberta em nova aba.");
-    } catch (e) {
-      toast(msg(e, "Não foi possível abrir a sala."), "err");
-    } finally {
-      setBusy("");
-    }
-  }
-
   if (mode === "reschedule") {
     return (
       <RescheduleView
@@ -103,7 +91,7 @@ export function AppointmentDetailModal({
   return (
     <Modal
       eyebrow="Consulta"
-      title={patientLabel(a.patientId)}
+      title={patientDisplayName(a.patientId, a.patientName)}
       onClose={onClose}
       footer={
         active ? (
@@ -148,12 +136,12 @@ export function AppointmentDetailModal({
             fontWeight: 600,
           }}
         >
-          {patientInitials(a.patientId)}
+          {patientDisplayInitials(a.patientId, a.patientName)}
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 16, fontWeight: 600 }}>{patientLabel(a.patientId)}</div>
+          <div style={{ fontSize: 16, fontWeight: 600 }}>{patientDisplayName(a.patientId, a.patientName)}</div>
           <div style={{ fontSize: 12, color: color.textFaint, marginTop: 2 }}>
-            paciente sem nome exposto ao médico (dado do paciente)
+            {a.patientName ? "nome autorizado por este paciente" : "este paciente não autorizou expor o nome"}
           </div>
         </div>
         <Chip label={statusLabel(a)} bg={bg} fg={fg} />
@@ -174,25 +162,7 @@ export function AppointmentDetailModal({
           {timeLocal(a.startDatetime)}–{timeLocal(a.endDatetime)}
         </Pill>
         <Pill>{typeLabel(a.appointmentType)}</Pill>
-        {isTelemedicine(a) && active && (
-          <button
-            onClick={openRoom}
-            disabled={!!busy}
-            style={{
-              height: 32,
-              padding: "0 16px",
-              border: "none",
-              borderRadius: 999,
-              background: color.tealSoft,
-              color: color.teal,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            {busy === "room" ? "Abrindo…" : "Abrir sala"}
-          </button>
-        )}
+        {isTelemedicine(a) && active && <EntrarNaSalaButton appointmentId={a.id} />}
       </div>
 
       {a.status === "SCHEDULED" && !a.confirmedAt && (
@@ -282,7 +252,7 @@ function RescheduleView({
   return (
     <Modal
       eyebrow="Remarcar consulta"
-      title={patientLabel(appointment.patientId)}
+      title={patientDisplayName(appointment.patientId, appointment.patientName)}
       onClose={onClose}
       footer={
         <>

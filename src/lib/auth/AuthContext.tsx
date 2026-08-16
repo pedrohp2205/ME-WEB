@@ -10,7 +10,7 @@ import {
 } from "react";
 import * as authApi from "@/lib/api/auth";
 import * as doctorsApi from "@/lib/api/doctors";
-import type { DoctorResponse } from "@/lib/api/doctors";
+import type { CredentialingResponse, DoctorResponse } from "@/lib/api/doctors";
 import { ApiError } from "@/lib/api/errors";
 import {
   emitLogout,
@@ -31,6 +31,8 @@ export type LoginResult =
 interface AuthContextValue {
   status: Status;
   doctor: DoctorResponse | null;
+  /** Estado do credenciamento (análise do cadastro + 2FA). */
+  credentialing: CredentialingResponse | null;
   login(email: string, password: string): Promise<LoginResult>;
   verifyTwoFactor(challengeToken: string, code: string): Promise<void>;
   logout(): Promise<void>;
@@ -38,6 +40,8 @@ interface AuthContextValue {
   setDoctor(doctor: DoctorResponse): void;
   /** Recarrega o perfil do backend. */
   refreshDoctor(): Promise<void>;
+  /** Recarrega o credenciamento (ex.: após ativar o 2FA ou sair da análise). */
+  refreshCredentialing(): Promise<CredentialingResponse>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -65,9 +69,19 @@ async function loadDoctorOrReject(): Promise<DoctorResponse> {
   }
 }
 
+/**
+ * Perfil + estado do credenciamento. Um médico em análise responde 200 nos dois
+ * endpoints (papel DOCTOR_ONBOARDING), então quem decide se ele entra no painel
+ * é a guarda de rota, olhando `canPractice`.
+ */
+async function loadSession(): Promise<[DoctorResponse, CredentialingResponse]> {
+  return Promise.all([loadDoctorOrReject(), doctorsApi.getCredentialing()]);
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>("loading");
   const [doctor, setDoctorState] = useState<DoctorResponse | null>(null);
+  const [credentialing, setCredentialing] = useState<CredentialingResponse | null>(null);
   const mounted = useRef(true);
 
   // Sessão persistida: valida carregando o perfil.
@@ -77,16 +91,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setStatus("unauthenticated");
       return;
     }
-    loadDoctorOrReject()
-      .then((d) => {
+    loadSession()
+      .then(([d, c]) => {
         if (!mounted.current) return;
         setDoctorState(d);
+        setCredentialing(c);
         setStatus("authenticated");
       })
       .catch(() => {
         clearTokens();
         if (!mounted.current) return;
         setDoctorState(null);
+        setCredentialing(null);
         setStatus("unauthenticated");
       });
     return () => {
@@ -98,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     return onLogout(() => {
       setDoctorState(null);
+      setCredentialing(null);
       setStatus("unauthenticated");
     });
   }, []);
@@ -112,11 +129,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new ApiError(500, "Resposta de login inválida.", null);
       }
       setTokens({ token: res.token, refreshToken: res.refreshToken });
-      const d = await loadDoctorOrReject().catch((e) => {
+      const [d, c] = await loadSession().catch((e) => {
         clearTokens();
         throw e;
       });
       setDoctorState(d);
+      setCredentialing(c);
       setStatus("authenticated");
       return { kind: "authenticated" };
     },
@@ -130,11 +148,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new ApiError(500, "Resposta de verificação inválida.", null);
       }
       setTokens({ token: res.token, refreshToken: res.refreshToken });
-      const d = await loadDoctorOrReject().catch((e) => {
+      const [d, c] = await loadSession().catch((e) => {
         clearTokens();
         throw e;
       });
       setDoctorState(d);
+      setCredentialing(c);
       setStatus("authenticated");
     },
     [],
@@ -154,18 +173,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const d = await doctorsApi.getMe();
     setDoctorState(d);
   }, []);
+  const refreshCredentialing = useCallback(async () => {
+    const c = await doctorsApi.getCredentialing();
+    setCredentialing(c);
+    return c;
+  }, []);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
       doctor,
+      credentialing,
       login,
       verifyTwoFactor,
       logout,
       setDoctor,
       refreshDoctor,
+      refreshCredentialing,
     }),
-    [status, doctor, login, verifyTwoFactor, logout, setDoctor, refreshDoctor],
+    [
+      status,
+      doctor,
+      credentialing,
+      login,
+      verifyTwoFactor,
+      logout,
+      setDoctor,
+      refreshDoctor,
+      refreshCredentialing,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -223,6 +223,32 @@ export function LoginPage() {
 
               <div
                 style={{
+                  marginTop: 20,
+                  fontSize: 13,
+                  color: color.textMuted,
+                  textAlign: "center",
+                }}
+              >
+                Ainda não tem cadastro?{" "}
+                <button
+                  onClick={() => navigate("/cadastro")}
+                  style={{
+                    border: "none",
+                    background: "none",
+                    color: color.primary,
+                    fontSize: 13,
+                    fontWeight: 500,
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  Criar cadastro médico
+                </button>
+              </div>
+
+              <div
+                style={{
                   display: "flex",
                   flexWrap: "wrap",
                   alignItems: "center",

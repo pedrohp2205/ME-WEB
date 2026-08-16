@@ -2,8 +2,11 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { ToastProvider } from "@/app/Toast";
 import { RequireDoctor } from "@/routes/RequireDoctor";
+import { RequireApproved } from "@/routes/RequireApproved";
 import { PublicOnly } from "@/routes/PublicOnly";
 import { LoginPage } from "@/features/auth/LoginPage";
+import { CadastroPage } from "@/features/auth/CadastroPage";
+import { CredenciamentoPage } from "@/features/auth/CredenciamentoPage";
 import { VerifyPage } from "@/features/public/VerifyPage";
 import { OAuthRedirect } from "@/pages/OAuthRedirect";
 import { SignatureCallback } from "@/pages/SignatureCallback";
@@ -13,6 +16,7 @@ import { PerfilPage } from "@/features/perfil/PerfilPage";
 import { AgendaPage } from "@/features/agenda/AgendaPage";
 import { ConsultasPage } from "@/features/consultas/ConsultasPage";
 import { ConsultaDetailPage } from "@/features/consultas/ConsultaDetailPage";
+import { SalaPage } from "@/features/teleconsulta/SalaPage";
 import { DocumentosPage } from "@/features/documentos/DocumentosPage";
 
 export default function App() {
@@ -30,15 +34,35 @@ export default function App() {
                 </PublicOnly>
               }
             />
+            <Route
+              path="/cadastro"
+              element={
+                <PublicOnly>
+                  <CadastroPage />
+                </PublicOnly>
+              }
+            />
             <Route path="/verificar" element={<VerifyPage />} />
             <Route path="/oauth2/redirect" element={<OAuthRedirect />} />
             <Route path="/document-signature/callback" element={<SignatureCallback />} />
 
-            {/* Protegidas (papel DOCTOR) — shell com navegação */}
+            {/* Autenticado, mas ainda sem credenciamento (análise / 2FA) */}
+            <Route
+              path="/credenciamento"
+              element={
+                <RequireDoctor>
+                  <CredenciamentoPage />
+                </RequireDoctor>
+              }
+            />
+
+            {/* Protegidas (papel DOCTOR credenciado) — shell com navegação */}
             <Route
               element={
                 <RequireDoctor>
-                  <AppShell />
+                  <RequireApproved>
+                    <AppShell />
+                  </RequireApproved>
                 </RequireDoctor>
               }
             >
@@ -46,6 +70,7 @@ export default function App() {
               <Route path="/agenda" element={<AgendaPage />} />
               <Route path="/consultas" element={<ConsultasPage />} />
               <Route path="/consultas/:id" element={<ConsultaDetailPage />} />
+              <Route path="/consultas/:id/sala" element={<SalaPage />} />
               <Route path="/documentos" element={<DocumentosPage />} />
               <Route path="/modelos" element={<ComingSoon title="Modelos" part="Parte 6" />} />
               <Route path="/acessos" element={<ComingSoon title="Acessos" part="Parte 6" />} />
