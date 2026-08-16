@@ -56,3 +56,15 @@ export function isTelemedicine(a: Appointment): boolean {
 export function isActive(a: Appointment): boolean {
   return a.status === "SCHEDULED";
 }
+
+/**
+ * Legenda sobre o nome do paciente. Quem decide é o consentimento gravado na
+ * consulta (`patientNameShared`), não a presença do nome na resposta: assim um
+ * endpoint que esqueça de resolver o nome vira código curto na tela, e não uma
+ * afirmação errada sobre o que o paciente autorizou.
+ */
+export function patientNameNotice(a: Appointment): string {
+  if (!a.patientNameShared) return "este paciente não autorizou expor o nome";
+  if (a.patientName?.trim()) return "nome autorizado por este paciente";
+  return "nome autorizado, mas não veio nesta consulta";
+}
