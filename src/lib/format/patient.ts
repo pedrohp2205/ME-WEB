@@ -1,7 +1,6 @@
-// Limitação real do backend: AppointmentResponse traz apenas patientId (UUID),
-// sem nome do paciente, e não há endpoint para o médico resolver essa identidade
-// (o paciente é dono dos seus dados). Representamos o paciente por um identificador
-// curto e estável derivado do UUID.
+// O nome do paciente só chega aqui quando ele autorizou aquela consulta, no
+// momento de agendar. Sem autorização a API devolve patientName nulo, e o
+// paciente é representado por um identificador curto derivado do UUID.
 
 /** UUID -> código curto tipo "P-3F9A" (últimos 4 hex, maiúsculo). */
 export function patientCode(patientId: string): string {
@@ -18,4 +17,19 @@ export function patientInitials(patientId: string): string {
 /** Rótulo amigável: "Paciente P-3F9A". */
 export function patientLabel(patientId: string): string {
   return "Paciente " + patientCode(patientId);
+}
+
+/** Nome autorizado, quando houver; senão o código curto. */
+export function patientDisplayName(patientId: string, patientName?: string | null): string {
+  return patientName?.trim() ? patientName : patientLabel(patientId);
+}
+
+/** Iniciais do nome autorizado, quando houver; senão as do UUID. */
+export function patientDisplayInitials(patientId: string, patientName?: string | null): string {
+  const name = patientName?.trim();
+  if (!name) return patientInitials(patientId);
+  const parts = name.split(/\s+/).filter(Boolean);
+  const first = parts[0]?.[0] ?? "";
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (first + last).toUpperCase();
 }

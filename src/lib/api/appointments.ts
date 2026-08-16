@@ -13,15 +13,37 @@ export interface Appointment {
   startDatetime: string; // ISO
   endDatetime: string;
   confirmedAt: string | null;
-  payment?: unknown;
+  payment?: Payment | null;
+  /** Só vem preenchido quando o paciente autorizou o nome nesta consulta. */
+  patientName?: string | null;
+  patientNameShared?: boolean;
+}
+
+export type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "CANCELED" | "EXPIRED";
+
+/** Só acompanha a consulta quando quem pergunta é o próprio paciente. */
+export interface Payment {
+  id: string;
+  appointmentId: string;
+  amountCents: number;
+  currency: string;
+  status: PaymentStatus;
+  checkoutUrl: string | null;
+  paidAt: string | null;
 }
 
 export interface Teleconsultation {
   appointmentId: string;
   roomName: string;
+  /** URL completa, com o token na query — serve para abrir em outra aba. */
   roomUrl: string;
+  /** Servidor puro, para o embed montar a sala. */
+  serverUrl: string;
+  /** JWT da sala. Null quando o servidor de vídeo está sem autenticação. */
+  token: string | null;
   startDatetime: string;
   endDatetime: string;
+  expiresAt: string;
 }
 
 export function listByDoctor(doctorId: string): Promise<Appointment[]> {

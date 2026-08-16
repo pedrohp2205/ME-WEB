@@ -10,7 +10,7 @@ import {
   statusLabel,
   typeLabel,
 } from "@/lib/domain/appointment";
-import { patientInitials, patientLabel } from "@/lib/format/patient";
+import { patientDisplayInitials, patientDisplayName } from "@/lib/format/patient";
 import { dateBR, isoDateLocal, isoDate, timeLocal, today0 } from "@/lib/format/datetime";
 import { PageTitle, Card, Chip } from "@/app/ui";
 import { FilterPills } from "@/features/agenda/FilterPills";
@@ -143,9 +143,9 @@ function AppointmentRow({
             fontWeight: 600,
           }}
         >
-          {patientInitials(a.patientId)}
+          {patientDisplayInitials(a.patientId, a.patientName)}
         </span>
-        <span style={{ fontSize: 14, fontWeight: 500 }}>{patientLabel(a.patientId)}</span>
+        <span style={{ fontSize: 14, fontWeight: 500 }}>{patientDisplayName(a.patientId, a.patientName)}</span>
       </span>
       <span style={{ fontSize: 13, color: color.textMuted }}>
         {dateBR(a.startDatetime)} · {timeLocal(a.startDatetime)}

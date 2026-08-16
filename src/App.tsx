@@ -13,6 +13,7 @@ import { PerfilPage } from "@/features/perfil/PerfilPage";
 import { AgendaPage } from "@/features/agenda/AgendaPage";
 import { ConsultasPage } from "@/features/consultas/ConsultasPage";
 import { ConsultaDetailPage } from "@/features/consultas/ConsultaDetailPage";
+import { SalaPage } from "@/features/teleconsulta/SalaPage";
 import { DocumentosPage } from "@/features/documentos/DocumentosPage";
 
 export default function App() {
@@ -46,6 +47,7 @@ export default function App() {
               <Route path="/agenda" element={<AgendaPage />} />
               <Route path="/consultas" element={<ConsultasPage />} />
               <Route path="/consultas/:id" element={<ConsultaDetailPage />} />
+              <Route path="/consultas/:id/sala" element={<SalaPage />} />
               <Route path="/documentos" element={<DocumentosPage />} />
               <Route path="/modelos" element={<ComingSoon title="Modelos" part="Parte 6" />} />
               <Route path="/acessos" element={<ComingSoon title="Acessos" part="Parte 6" />} />

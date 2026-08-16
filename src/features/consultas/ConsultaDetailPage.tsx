@@ -13,11 +13,12 @@ import {
   statusLabel,
   typeLabel,
 } from "@/lib/domain/appointment";
-import { patientInitials, patientLabel } from "@/lib/format/patient";
+import { patientDisplayInitials, patientDisplayName } from "@/lib/format/patient";
 import { dateBR, timeLocal } from "@/lib/format/datetime";
 import { Card, Chip, Field, GhostButton, TextArea } from "@/app/ui";
 import { ErrorBox } from "./ConsultasPage";
 import { ConsultaDocuments } from "@/features/documentos/ConsultaDocuments";
+import { EntrarNaSalaButton } from "@/features/teleconsulta/EntrarNaSalaButton";
 import { color, radius } from "@/theme/tokens";
 
 function msg(e: unknown, fallback: string): string {
@@ -77,14 +78,14 @@ export function ConsultaDetailPage() {
               fontWeight: 600,
             }}
           >
-            {patientInitials(a.patientId)}
+            {patientDisplayInitials(a.patientId, a.patientName)}
           </span>
           <span style={{ minWidth: 0, flex: 1 }}>
             <span style={{ display: "block", fontSize: 20, fontWeight: 600, letterSpacing: "-.4px" }}>
-              {patientLabel(a.patientId)}
+              {patientDisplayName(a.patientId, a.patientName)}
             </span>
             <span style={{ display: "block", fontSize: 12, color: color.textFaint, marginTop: 3 }}>
-              paciente sem nome exposto ao médico (dado do paciente)
+              {a.patientName ? "nome autorizado por este paciente" : "este paciente não autorizou expor o nome"}
             </span>
           </span>
           <Chip label={statusLabel(a)} bg={bg} fg={fg} />
@@ -105,7 +106,7 @@ export function ConsultaDetailPage() {
           </Pill>
           <Pill>{typeLabel(a.appointmentType)}</Pill>
           {isTelemedicine(a) && a.status === "SCHEDULED" && (
-            <OpenRoomButton appointmentId={a.id} />
+            <EntrarNaSalaButton appointmentId={a.id} />
           )}
         </div>
       </Card>
@@ -178,42 +179,6 @@ function Pill({ children }: { children: React.ReactNode }) {
     >
       {children}
     </span>
-  );
-}
-
-function OpenRoomButton({ appointmentId }: { appointmentId: string }) {
-  const { toast } = useToast();
-  const [busy, setBusy] = useState(false);
-  async function open() {
-    setBusy(true);
-    try {
-      const tele = await appointmentsApi.getTeleconsultation(appointmentId);
-      window.open(tele.roomUrl, "_blank", "noopener,noreferrer");
-      toast("Sala de teleconsulta aberta em nova aba.");
-    } catch (e) {
-      toast(msg(e, "Não foi possível abrir a sala."), "err");
-    } finally {
-      setBusy(false);
-    }
-  }
-  return (
-    <button
-      onClick={open}
-      disabled={busy}
-      style={{
-        height: 32,
-        padding: "0 16px",
-        border: "none",
-        borderRadius: 999,
-        background: color.tealSoft,
-        color: color.teal,
-        fontSize: 13,
-        fontWeight: 600,
-        cursor: "pointer",
-      }}
-    >
-      {busy ? "Abrindo…" : "Abrir sala"}
-    </button>
   );
 }
 
