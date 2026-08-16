@@ -11,7 +11,7 @@ import {
   typeBar,
   typeLabel,
 } from "@/lib/domain/appointment";
-import { patientCode } from "@/lib/format/patient";
+import { patientDisplayName } from "@/lib/format/patient";
 import {
   addDays,
   dayAbbr,
@@ -196,7 +196,7 @@ function WeekApptCard({ a, onClick }: { a: Appointment; onClick: () => void }) {
           whiteSpace: "nowrap",
         }}
       >
-        {patientCode(a.patientId)}
+        {patientDisplayName(a.patientId, a.patientName)}
       </span>
       <span style={{ fontSize: 11, color: fg, fontWeight: 500 }}>
         {statusLabel(a)} · {typeLabel(a.appointmentType)}
