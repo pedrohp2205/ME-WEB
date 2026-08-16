@@ -2,8 +2,11 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { ToastProvider } from "@/app/Toast";
 import { RequireDoctor } from "@/routes/RequireDoctor";
+import { RequireApproved } from "@/routes/RequireApproved";
 import { PublicOnly } from "@/routes/PublicOnly";
 import { LoginPage } from "@/features/auth/LoginPage";
+import { CadastroPage } from "@/features/auth/CadastroPage";
+import { CredenciamentoPage } from "@/features/auth/CredenciamentoPage";
 import { VerifyPage } from "@/features/public/VerifyPage";
 import { OAuthRedirect } from "@/pages/OAuthRedirect";
 import { SignatureCallback } from "@/pages/SignatureCallback";
@@ -31,15 +34,35 @@ export default function App() {
                 </PublicOnly>
               }
             />
+            <Route
+              path="/cadastro"
+              element={
+                <PublicOnly>
+                  <CadastroPage />
+                </PublicOnly>
+              }
+            />
             <Route path="/verificar" element={<VerifyPage />} />
             <Route path="/oauth2/redirect" element={<OAuthRedirect />} />
             <Route path="/document-signature/callback" element={<SignatureCallback />} />
 
-            {/* Protegidas (papel DOCTOR) — shell com navegação */}
+            {/* Autenticado, mas ainda sem credenciamento (análise / 2FA) */}
+            <Route
+              path="/credenciamento"
+              element={
+                <RequireDoctor>
+                  <CredenciamentoPage />
+                </RequireDoctor>
+              }
+            />
+
+            {/* Protegidas (papel DOCTOR credenciado) — shell com navegação */}
             <Route
               element={
                 <RequireDoctor>
-                  <AppShell />
+                  <RequireApproved>
+                    <AppShell />
+                  </RequireApproved>
                 </RequireDoctor>
               }
             >
