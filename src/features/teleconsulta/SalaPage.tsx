@@ -142,6 +142,7 @@ export function SalaPage() {
     <div style={{ animation: "up .25s ease-out", display: "grid", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
         <GhostButton onClick={() => navigate(`/consultas/${id}`)}>Voltar ao atendimento</GhostButton>
+        {room && <AbrirEmOutraAba roomUrl={room.roomUrl} />}
         {room && (
           <span style={{ fontSize: 13, color: color.textMuted }}>
             {dateBR(room.startDatetime)} · {timeLocal(room.startDatetime)}–{timeLocal(room.endDatetime)}
@@ -236,6 +237,36 @@ export function SalaPage() {
         <SoapCard appointmentId={id} canEdit twoCol="1fr" />
       </div>
     </div>
+  );
+}
+
+/**
+ * A sala embutida é o caminho normal, mas nem todo ambiente colabora: extensão
+ * que bloqueia iframe de terceiro, política de frame do servidor de vídeo ou
+ * segunda tela. Abrir fora é opção permanente, não só rota de fuga do erro.
+ */
+function AbrirEmOutraAba({ roomUrl }: { roomUrl: string }) {
+  return (
+    <a
+      href={roomUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        height: 46,
+        padding: "0 20px",
+        border: `1px solid ${color.border}`,
+        borderRadius: radius.pill,
+        background: color.surface,
+        color: color.text,
+        fontSize: 14,
+        fontWeight: 500,
+        textDecoration: "none",
+      }}
+    >
+      Abrir em outra aba
+    </a>
   );
 }
 

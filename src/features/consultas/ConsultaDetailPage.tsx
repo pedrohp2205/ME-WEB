@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAsync } from "@/lib/useAsync";
 import { useWindowWidth } from "@/lib/useWindowWidth";
 import * as appointmentsApi from "@/lib/api/appointments";
+import { ApiError } from "@/lib/api/errors";
 import {
+  isActive,
   isTelemedicine,
   statusChip,
   statusLabel,
@@ -10,7 +13,8 @@ import {
 } from "@/lib/domain/appointment";
 import { patientDisplayInitials, patientDisplayName } from "@/lib/format/patient";
 import { dateBR, timeLocal } from "@/lib/format/datetime";
-import { Card, Chip } from "@/app/ui";
+import { useToast } from "@/app/Toast";
+import { Card, Chip, GhostButton, PrimaryButton } from "@/app/ui";
 import { ErrorBox } from "./ConsultasPage";
 import { ConsultaDocuments } from "@/features/documentos/ConsultaDocuments";
 import { SoapCard } from "./SoapCard";
@@ -22,8 +26,26 @@ export function ConsultaDetailPage() {
   const navigate = useNavigate();
   const width = useWindowWidth();
   const twoCol = width >= 768 ? "repeat(2,minmax(0,1fr))" : "1fr";
+  const { toast } = useToast();
 
   const appt = useAsync(() => appointmentsApi.getById(id), [id]);
+  const [confirmFinish, setConfirmFinish] = useState(false);
+  const [finishing, setFinishing] = useState(false);
+
+  /** Concluir é irreversível: sai de SCHEDULED e fecha a sala junto. */
+  async function finish() {
+    setFinishing(true);
+    try {
+      await appointmentsApi.complete(id);
+      toast("Consulta concluída.");
+      appt.reload();
+    } catch (e) {
+      toast(e instanceof ApiError ? e.message : "Não foi possível concluir a consulta.", "err");
+    } finally {
+      setFinishing(false);
+      setConfirmFinish(false);
+    }
+  }
 
   if (appt.loading)
     return (
@@ -99,6 +121,34 @@ export function ConsultaDetailPage() {
           <Pill>{typeLabel(a.appointmentType)}</Pill>
           {isTelemedicine(a) && a.status === "SCHEDULED" && (
             <EntrarNaSalaButton appointmentId={a.id} />
+          )}
+
+          {isActive(a) && (
+            <span
+              style={{
+                marginLeft: "auto",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                flexWrap: "wrap",
+              }}
+            >
+              {confirmFinish ? (
+                <>
+                  <span style={{ fontSize: 13, color: color.textMuted }}>
+                    Concluir esta consulta? Salve o rascunho antes, se ainda não salvou.
+                  </span>
+                  <GhostButton onClick={() => setConfirmFinish(false)} disabled={finishing}>
+                    Voltar
+                  </GhostButton>
+                  <PrimaryButton onClick={finish} disabled={finishing}>
+                    {finishing ? "Concluindo…" : "Confirmar"}
+                  </PrimaryButton>
+                </>
+              ) : (
+                <GhostButton onClick={() => setConfirmFinish(true)}>Concluir consulta</GhostButton>
+              )}
+            </span>
           )}
         </div>
       </Card>
