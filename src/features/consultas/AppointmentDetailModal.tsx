@@ -11,6 +11,7 @@ import { ApiError } from "@/lib/api/errors";
 import {
   isActive,
   isTelemedicine,
+  patientNameNotice,
   statusChip,
   statusLabel,
   typeLabel,
@@ -141,7 +142,7 @@ export function AppointmentDetailModal({
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: 16, fontWeight: 600 }}>{patientDisplayName(a.patientId, a.patientName)}</div>
           <div style={{ fontSize: 12, color: color.textFaint, marginTop: 2 }}>
-            {a.patientName ? "nome autorizado por este paciente" : "este paciente não autorizou expor o nome"}
+            {patientNameNotice(a)}
           </div>
         </div>
         <Chip label={statusLabel(a)} bg={bg} fg={fg} />

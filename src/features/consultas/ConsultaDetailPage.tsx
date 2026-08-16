@@ -7,6 +7,7 @@ import { ApiError } from "@/lib/api/errors";
 import {
   isActive,
   isTelemedicine,
+  patientNameNotice,
   statusChip,
   statusLabel,
   typeLabel,
@@ -99,7 +100,7 @@ export function ConsultaDetailPage() {
               {patientDisplayName(a.patientId, a.patientName)}
             </span>
             <span style={{ display: "block", fontSize: 12, color: color.textFaint, marginTop: 3 }}>
-              {a.patientName ? "nome autorizado por este paciente" : "este paciente não autorizou expor o nome"}
+              {patientNameNotice(a)}
             </span>
           </span>
           <Chip label={statusLabel(a)} bg={bg} fg={fg} />
