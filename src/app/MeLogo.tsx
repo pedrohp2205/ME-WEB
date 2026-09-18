@@ -41,7 +41,7 @@ export function MeBrand({
             whiteSpace: "nowrap",
           }}
         >
-          Médico
+          Profissional
         </span>
       )}
     </div>

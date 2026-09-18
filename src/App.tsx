@@ -8,6 +8,7 @@ import { LoginPage } from "@/features/auth/LoginPage";
 import { CadastroPage } from "@/features/auth/CadastroPage";
 import { CredenciamentoPage } from "@/features/auth/CredenciamentoPage";
 import { VerifyPage } from "@/features/public/VerifyPage";
+import { VerificacaoFacialMobilePage } from "@/features/verificacao/VerificacaoFacialMobilePage";
 import { OAuthRedirect } from "@/pages/OAuthRedirect";
 import { SignatureCallback } from "@/pages/SignatureCallback";
 import { AppShell } from "@/app/shell/AppShell";
@@ -43,6 +44,7 @@ export default function App() {
               }
             />
             <Route path="/verificar" element={<VerifyPage />} />
+            <Route path="/verificacao-facial" element={<VerificacaoFacialMobilePage />} />
             <Route path="/oauth2/redirect" element={<OAuthRedirect />} />
             <Route path="/document-signature/callback" element={<SignatureCallback />} />
 

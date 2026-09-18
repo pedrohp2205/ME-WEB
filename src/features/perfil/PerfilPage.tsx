@@ -87,12 +87,12 @@ export function PerfilPage() {
 
       {/* Dados do médico (definidos no cadastro; somente leitura) */}
       <Card>
-        <SectionTitle>Dados do médico</SectionTitle>
+        <SectionTitle>Dados profissionais</SectionTitle>
         <div style={{ display: "grid", gridTemplateColumns: twoCol, gap: 14 }}>
           <Field label="Nome">
             <TextInput value={doctor.fullName} readOnly disabled />
           </Field>
-          <Field label="CRM">
+          <Field label={doctor.council ?? "CRM"}>
             <TextInput value={doctor.crm} readOnly disabled />
           </Field>
           <Field label="RQE">
@@ -103,7 +103,7 @@ export function PerfilPage() {
           </Field>
         </div>
         <p style={{ margin: "14px 0 0", fontSize: 12, color: color.textFaint, lineHeight: 1.6 }}>
-          Nome, CRM e RQE são definidos no cadastro e não são editáveis aqui.
+          Nome e registro no conselho são definidos no cadastro e não são editáveis aqui.
         </p>
       </Card>
 

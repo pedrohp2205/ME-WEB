@@ -34,6 +34,8 @@ interface RequestOptions {
   signal?: AbortSignal;
   /** Não tentar refresh em 401 (usado internamente pelo próprio refresh). */
   skipRefresh?: boolean;
+  headers?: Record<string, string>;
+  form?: FormData;
 }
 
 function buildUrl(
@@ -100,7 +102,7 @@ async function rawFetch(
   opts: RequestOptions,
   accessToken: string | null,
 ): Promise<Response> {
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = { ...opts.headers };
   if (opts.body !== undefined) headers["Content-Type"] = "application/json";
   if (opts.auth !== false && accessToken) {
     headers["Authorization"] = `Bearer ${accessToken}`;
@@ -108,7 +110,7 @@ async function rawFetch(
   return fetch(buildUrl(path, opts.query), {
     method,
     headers,
-    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+    body: opts.form ?? (opts.body !== undefined ? JSON.stringify(opts.body) : undefined),
     signal: opts.signal,
   });
 }
@@ -163,6 +165,9 @@ export const api = {
   },
   del<T>(path: string, opts?: RequestOptions): Promise<T> {
     return send("DELETE", path, opts ?? {}).then(toJson<T>);
+  },
+  upload<T>(method: "POST" | "PUT", path: string, form: FormData, opts?: RequestOptions): Promise<T> {
+    return send(method, path, { ...opts, form }).then(toJson<T>);
   },
   /** Baixa um arquivo (ex.: PDF assinado) como Blob, com refresh e Bearer. */
   blob(path: string, opts?: RequestOptions): Promise<Blob> {

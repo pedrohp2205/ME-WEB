@@ -18,6 +18,7 @@ interface Form {
   fullName: string;
   cpf: string;
   phoneNumber: string;
+  profession: doctorsApi.Profession;
   crm: string;
   crmUf: string;
   rqe: string;
@@ -30,6 +31,7 @@ const BLANK: Form = {
   fullName: "",
   cpf: "",
   phoneNumber: "",
+  profession: "MEDICINE",
   crm: "",
   crmUf: "",
   rqe: "",
@@ -117,9 +119,10 @@ export function CadastroPage() {
     }
 
     if (n === 2) {
-      if (!form.crm.trim()) e.crm = "Informe o número do CRM.";
-      else if (form.crm.trim().length > 20) e.crm = "O CRM deve ter no máximo 20 caracteres.";
-      if (!form.crmUf) e.crmUf = "Selecione a UF do CRM.";
+      const conselho = doctorsApi.councilOf(form.profession);
+      if (!form.crm.trim()) e.crm = `Informe o número do ${conselho}.`;
+      else if (form.crm.trim().length > 20) e.crm = `O ${conselho} deve ter no máximo 20 caracteres.`;
+      if (!form.crmUf) e.crmUf = `Selecione a UF do ${conselho}.`;
       if (form.rqe.trim().length > 100) e.rqe = "O RQE deve ter no máximo 100 caracteres.";
     }
 
@@ -151,14 +154,15 @@ export function CadastroPage() {
     setBusy(true);
     setFormError("");
     try {
-      await doctorsApi.registerDoctor({
+      await doctorsApi.registerProfessional({
         email: form.email.trim(),
         password: form.password,
         fullName: form.fullName.trim(),
-        crm: form.crm.trim(),
-        crmUf: form.crmUf,
+        profession: form.profession,
+        councilNumber: form.crm.trim(),
+        councilUf: form.crmUf,
         cpf: form.cpf.replace(/\D/g, ""),
-        rqe: form.rqe.trim() || null,
+        rqe: form.profession === "MEDICINE" ? form.rqe.trim() || null : null,
         phoneNumber: form.phoneNumber.trim() || null,
       });
       setSent(true);
@@ -211,7 +215,7 @@ export function CadastroPage() {
                   letterSpacing: "-.6px",
                 }}
               >
-                Criar cadastro médico
+                Criar cadastro profissional
               </h1>
               <p
                 style={{
@@ -262,8 +266,22 @@ export function CadastroPage() {
 
                 {step === 2 && (
                   <>
+                    <Field label="Profissão">
+                      <Select
+                        value={form.profession}
+                        onChange={(e) =>
+                          set({ profession: e.target.value as doctorsApi.Profession, rqe: "" })
+                        }
+                      >
+                        {doctorsApi.PROFESSIONS.map((p) => (
+                          <option key={p.value} value={p.value}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </Select>
+                    </Field>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 110px", gap: 12 }}>
-                      <Field label="CRM">
+                      <Field label={doctorsApi.councilOf(form.profession)}>
                         <TextInput
                           value={form.crm}
                           onChange={(e) => set({ crm: e.target.value })}
@@ -286,17 +304,19 @@ export function CadastroPage() {
                         <Erro msg={errors.crmUf} />
                       </Field>
                     </div>
-                    <Field
-                      label="RQE (opcional)"
-                      hint="Registro de Qualificação de Especialista, se você tiver."
-                    >
-                      <TextInput
-                        value={form.rqe}
-                        onChange={(e) => set({ rqe: e.target.value })}
-                        placeholder="12345"
-                      />
-                      <Erro msg={errors.rqe} />
-                    </Field>
+                    {form.profession === "MEDICINE" && (
+                      <Field
+                        label="RQE (opcional)"
+                        hint="Registro de Qualificação de Especialista, se você tiver."
+                      >
+                        <TextInput
+                          value={form.rqe}
+                          onChange={(e) => set({ rqe: e.target.value })}
+                          placeholder="12345"
+                        />
+                        <Erro msg={errors.rqe} />
+                      </Field>
+                    )}
                     <p style={{ margin: 0, fontSize: 12, color: color.textFaint, lineHeight: 1.6 }}>
                       Suas especialidades e o valor da consulta são configurados no
                       painel, depois da aprovação.
@@ -441,7 +461,7 @@ export function CadastroPage() {
                   color: color.primary,
                 }}
               >
-                Cadastre-se e atenda com agenda, prontuário e receita assinada.
+                Cadastre-se e atenda com agenda, prontuário e documentos assinados.
               </h2>
             </div>
           </div>

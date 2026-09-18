@@ -61,7 +61,7 @@ async function loadDoctorOrReject(): Promise<DoctorResponse> {
     ) {
       throw new ApiError(
         e.status,
-        "Esta conta não é de um médico ou o perfil ainda não foi criado.",
+        "Esta conta não é de um profissional de saúde ou o perfil ainda não foi criado.",
         e.body,
       );
     }
