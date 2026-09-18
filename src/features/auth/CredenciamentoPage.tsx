@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { useToast } from "@/app/Toast";
 import * as authApi from "@/lib/api/auth";
 import type { TwoFactorSetupResponse } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/errors";
+import { getVerification, type VerificationResponse } from "@/lib/api/verification";
+import { VerificacaoCadastro } from "@/features/verificacao/VerificacaoCadastro";
 import { MeBrand } from "@/app/MeLogo";
 import { Card, Chip, Field, GhostButton, PrimaryButton, TextInput } from "@/app/ui";
 import { color, radius } from "@/theme/tokens";
@@ -19,6 +21,19 @@ export function CredenciamentoPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [checking, setChecking] = useState(false);
+  const [verification, setVerification] = useState<VerificationResponse | null>(null);
+
+  const loadVerification = useCallback(async () => {
+    try {
+      setVerification(await getVerification());
+    } catch {
+      setVerification(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadVerification();
+  }, [loadVerification]);
 
   // Credenciado: nada a fazer aqui.
   if (credentialing?.canPractice) return <Navigate to="/" replace />;
@@ -43,6 +58,12 @@ export function CredenciamentoPage() {
   const status = credentialing?.approvalStatus ?? "PENDING";
   const precisaDeDoisFatores =
     status === "APPROVED" && credentialing?.twoFactorEnabled === false;
+  const precisaVerificar = status !== "APPROVED" && verification !== null && !verification.locked;
+
+  async function handleSubmitted() {
+    await refreshCredentialing();
+    await loadVerification();
+  }
 
   return (
     <div
@@ -62,17 +83,28 @@ export function CredenciamentoPage() {
           <MeBrand height={40} />
         </div>
 
-        {status === "PENDING" && (
+        {status === "REJECTED" && <Recusado reason={credentialing?.approvalReason ?? null} />}
+
+        {precisaVerificar && verification && (
+          <div style={{ marginTop: status === "REJECTED" ? 16 : 0 }}>
+            <VerificacaoCadastro
+              verification={verification}
+              onChange={setVerification}
+              onSubmitted={handleSubmitted}
+            />
+          </div>
+        )}
+
+        {status === "PENDING" && !precisaVerificar && (
           <EmAnalise
             doctorName={doctor?.fullName ?? ""}
             crm={doctor?.crm ?? ""}
             crmUf={credentialing?.crmUf ?? null}
+            council={credentialing?.council ?? "CRM"}
             checking={checking}
             onCheckAgain={handleCheckAgain}
           />
         )}
-
-        {status === "REJECTED" && <Recusado reason={credentialing?.approvalReason ?? null} />}
 
         {precisaDeDoisFatores && (
           <AtivarDoisFatores
@@ -110,12 +142,14 @@ function EmAnalise({
   doctorName,
   crm,
   crmUf,
+  council,
   checking,
   onCheckAgain,
 }: {
   doctorName: string;
   crm: string;
   crmUf: string | null;
+  council: string;
   checking: boolean;
   onCheckAgain: () => void;
 }) {
@@ -139,12 +173,12 @@ function EmAnalise({
         libera automaticamente — não é preciso se cadastrar de novo.
       </p>
 
-      <Resumo doctorName={doctorName} crm={crm} crmUf={crmUf} />
+      <Resumo doctorName={doctorName} crm={crm} crmUf={crmUf} council={council} />
 
       <Passos
         items={[
-          { label: "Cadastro enviado", done: true },
-          { label: "Análise do CRM pela equipe", done: false, current: true },
+          { label: "Cadastro, documentos e prova de vida enviados", done: true },
+          { label: `Análise do ${council} pela equipe`, done: false, current: true },
           { label: "Acesso liberado ao painel", done: false },
         ]}
       />
@@ -170,14 +204,16 @@ function Resumo({
   doctorName,
   crm,
   crmUf,
+  council,
 }: {
   doctorName: string;
   crm: string;
   crmUf: string | null;
+  council: string;
 }) {
   const linhas: Array<[string, string]> = [
     ["Nome", doctorName || "—"],
-    ["CRM", crm ? `${crm}${crmUf ? ` / ${crmUf}` : ""}` : "—"],
+    [council, crm ? `${crm}${crmUf ? ` / ${crmUf}` : ""}` : "—"],
   ];
   return (
     <div
@@ -284,8 +320,8 @@ function Recusado({ reason }: { reason: string | null }) {
       )}
 
       <p style={{ margin: "18px 0 0", fontSize: 13, color: color.textMuted, lineHeight: 1.7 }}>
-        Se você acha que houve um engano ou quer corrigir alguma informação, fale
-        com o suporte em{" "}
+        Corrija os documentos abaixo e envie de novo para uma nova análise. Se
+        tiver dúvidas, fale com o suporte em{" "}
         <a href="mailto:suporte@mesaude.com" style={{ color: color.primary }}>
           suporte@mesaude.com
         </a>

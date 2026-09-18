@@ -76,6 +76,8 @@ export interface CredentialingResponse {
   /** Motivo da recusa, preenchido pela equipe quando o cadastro é negado. */
   approvalReason: string | null;
   cpfInformed: boolean;
+  council?: string;
+  councilUf?: string | null;
   crmUf: string | null;
   certificate: DoctorCertificateResponse | null;
   twoFactorEnabled: boolean;
