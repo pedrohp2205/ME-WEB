@@ -577,13 +577,26 @@ function EnviadoComSucesso({ onGoToLogin }: { onGoToLogin: () => void }) {
           lineHeight: 1.25,
         }}
       >
-        Recebemos seus dados
+        Agora confirme a sua identidade
       </h1>
-      <p style={{ margin: "0 0 20px", fontSize: 14, color: color.textMuted, lineHeight: 1.7 }}>
-        A equipe M.E Saúde vai conferir seu registro no conselho. Enquanto isso
-        você já pode entrar com seu e-mail e senha — o painel abre assim que o
-        cadastro for aprovado.
+      <p style={{ margin: "0 0 16px", fontSize: 14, color: color.textMuted, lineHeight: 1.7 }}>
+        Seu cadastro foi criado, mas ainda não está na fila de análise. Para a
+        equipe M.E Saúde analisar, falta:
       </p>
+      <ol
+        style={{
+          margin: "0 0 20px",
+          paddingLeft: 20,
+          fontSize: 14,
+          color: color.text,
+          lineHeight: 1.9,
+        }}
+      >
+        <li>Entrar com o e-mail e a senha que você acabou de criar.</li>
+        <li>Enviar as fotos da carteira do conselho, do RG ou CNH e do diploma.</li>
+        <li>Fazer a prova de vida pela câmera do computador ou pelo celular, com um QR code.</li>
+        <li>Enviar para análise. O painel libera assim que o cadastro for aprovado.</li>
+      </ol>
       <div
         style={{
           padding: "14px 16px",
@@ -600,7 +613,7 @@ function EnviadoComSucesso({ onGoToLogin }: { onGoToLogin: () => void }) {
         vincula seu certificado digital para assinar documentos.
       </div>
       <PrimaryButton onClick={onGoToLogin} style={{ width: "100%" }}>
-        Ir para o login
+        Entrar e continuar
       </PrimaryButton>
     </div>
   );
