@@ -243,7 +243,7 @@ export function LoginPage() {
                     padding: 0,
                   }}
                 >
-                  Criar cadastro médico
+                  Criar cadastro profissional
                 </button>
               </div>
 

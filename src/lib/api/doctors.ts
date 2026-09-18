@@ -2,11 +2,27 @@
 // usado nas rotas de agenda/consulta.
 import { api } from "./http";
 
+export type Profession = "MEDICINE" | "NUTRITION" | "PSYCHOLOGY" | "PHYSIOTHERAPY" | "PHYSICAL_EDUCATION";
+
+export const PROFESSIONS: { value: Profession; label: string; council: string }[] = [
+  { value: "MEDICINE", label: "Médico(a)", council: "CRM" },
+  { value: "NUTRITION", label: "Nutricionista", council: "CRN" },
+  { value: "PSYCHOLOGY", label: "Psicólogo(a)", council: "CRP" },
+  { value: "PHYSIOTHERAPY", label: "Fisioterapeuta", council: "CREFITO" },
+  { value: "PHYSICAL_EDUCATION", label: "Profissional de Educação Física", council: "CREF" },
+];
+
+export function councilOf(profession: Profession | undefined): string {
+  return PROFESSIONS.find((p) => p.value === profession)?.council ?? "CRM";
+}
+
 export interface DoctorResponse {
   id: string;
   userId: string;
   clinicId: string | null;
   fullName: string;
+  profession?: Profession;
+  council?: string;
   crm: string;
   rqe: string | null;
   consultationPriceCents: number | null;
@@ -110,6 +126,26 @@ export interface DoctorRegistrationResponse {
   crm: string;
   crmUf: string | null;
   approvalStatus: ApprovalStatus;
+}
+
+export interface RegisterProfessionalRequest {
+  email: string;
+  password: string;
+  fullName: string;
+  profession: Profession;
+  councilNumber: string;
+  councilUf: string;
+  cpf: string;
+  rqe?: string | null;
+  phoneNumber?: string | null;
+}
+
+export function registerProfessional(
+  body: RegisterProfessionalRequest,
+): Promise<DoctorRegistrationResponse> {
+  return api.post<DoctorRegistrationResponse>("/professionals/registration", body, {
+    auth: false,
+  });
 }
 
 /** Cria conta + perfil do médico numa tacada. Nasce PENDING, sem sessão. */

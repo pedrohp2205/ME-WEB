@@ -60,7 +60,7 @@ export function AppShell() {
   }
 
   const current = location.pathname;
-  const doctorName = doctor?.fullName ?? "Médico";
+  const doctorName = doctor?.fullName ?? "Profissional";
   const perfilActive = isActive("/perfil", current);
 
   return (
@@ -204,7 +204,7 @@ export function AppShell() {
                   marginTop: 1,
                 }}
               >
-                {doctor?.crm ?? "Médico"}
+                {doctor ? `${doctor.council ?? "CRM"} ${doctor.crm}` : "Profissional"}
               </span>
             </span>
           )}
