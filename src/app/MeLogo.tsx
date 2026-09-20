@@ -1,26 +1,28 @@
 import { color } from "@/theme/tokens";
 
-const LOGO_SRC = "/me-logo.png";
-const ASPECT = 287 / 125; // dimensões reais do asset
+// Ícone oficial do "me": badge coral quadrado (1:1), cantos já arredondados e
+// transparentes no próprio PNG. width = height.
+const LOGO_SRC = "/me-icon.png";
 
-/** Logo oficial do ME (wordmark "me" com o batimento no "e"). Asset real do app Flutter. */
+/** Marca do ME — ícone quadrado "me" (badge coral). Proporção 1:1. */
 export function MeLogo({ height = 32 }: { height?: number }) {
   return (
     <img
       src={LOGO_SRC}
       alt="ME"
+      width={height}
       height={height}
-      style={{ height, width: height * ASPECT, display: "block" }}
+      style={{ width: height, height, display: "block", objectFit: "contain" }}
     />
   );
 }
 
 /**
- * Lockup de marca: logo + "Médico". Usado no cabeçalho do login, na sidebar e
- * no topbar. Espelha o "ME Médico" do protótipo com a logo real.
+ * Lockup de marca: ícone quadrado + "Saúde" ("me Saúde"). Usado no login,
+ * cadastro, credenciamento e no header do painel.
  */
 export function MeBrand({
-  height = 30,
+  height = 32,
   labelSize = 15,
   showLabel = true,
 }: {
@@ -41,7 +43,7 @@ export function MeBrand({
             whiteSpace: "nowrap",
           }}
         >
-          Médico
+          Saúde
         </span>
       )}
     </div>

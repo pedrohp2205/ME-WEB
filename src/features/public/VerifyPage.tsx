@@ -62,7 +62,7 @@ export function VerifyPage() {
     >
       <div style={{ width: "100%", maxWidth: 560 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
-          <MeLogo height={26} />
+          <MeLogo height={34} />
           <div style={{ fontSize: 15, fontWeight: 600 }}>Verificação pública de documento</div>
         </div>
 

@@ -129,7 +129,7 @@ export function LoginPage() {
       >
         <div style={{ width: "100%", maxWidth: 400, animation: "up .3s ease-out" }}>
           <div style={{ marginBottom: 36 }}>
-            <MeBrand height={48} showLabel={false} />
+            <MeBrand height={44} showLabel={false} />
           </div>
 
           {phase === "login" ? (

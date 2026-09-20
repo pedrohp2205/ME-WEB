@@ -196,7 +196,7 @@ export function CadastroPage() {
       >
         <div style={{ width: "100%", maxWidth: 440, animation: "up .3s ease-out" }}>
           <div style={{ marginBottom: 32 }}>
-            <MeBrand height={48} showLabel={false} />
+            <MeBrand height={44} showLabel={false} />
           </div>
 
           {sent ? (

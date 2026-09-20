@@ -80,7 +80,7 @@ export function SignatureCallback() {
         }}
       >
         <div style={{ marginBottom: 20 }}>
-          <MeLogo height={26} />
+          <MeLogo height={34} />
         </div>
         <div
           style={{
