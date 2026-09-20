@@ -26,7 +26,9 @@ export function ConsultaDetailPage() {
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const width = useWindowWidth();
-  const twoCol = width >= 768 ? "repeat(2,minmax(0,1fr))" : "1fr";
+  // auto-fit: em telas largas os campos do SOAP fluem em mais colunas em vez de
+  // esticar um único campo pela largura toda.
+  const twoCol = width >= 768 ? "repeat(auto-fit,minmax(280px,1fr))" : "1fr";
   const { toast } = useToast();
 
   const appt = useAsync(() => appointmentsApi.getById(id), [id]);
@@ -73,7 +75,7 @@ export function ConsultaDetailPage() {
   const [bg, fg] = statusChip(a);
 
   return (
-    <div style={{ animation: "up .25s ease-out", display: "grid", gap: 16, maxWidth: 920 }}>
+    <div style={{ animation: "up .25s ease-out", display: "grid", gap: 16 }}>
       <BackLink onClick={() => navigate("/consultas")} />
 
       {/* Cabeçalho */}

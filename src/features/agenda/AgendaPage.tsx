@@ -23,7 +23,7 @@ import {
   today0,
 } from "@/lib/format/datetime";
 import { PageTitle } from "@/app/ui";
-import { FilterPills } from "./FilterPills";
+import { FilterSelect } from "@/app/FilterSelect";
 import { HorariosTab } from "./HorariosTab";
 import { BloqueiosTab } from "./BloqueiosTab";
 import { AppointmentDetailModal } from "@/features/consultas/AppointmentDetailModal";
@@ -44,8 +44,13 @@ export function AgendaPage() {
         title="Agenda"
         subtitle="Consultas da semana, janelas de atendimento e bloqueios."
       />
-      <div style={{ marginBottom: 20 }}>
-        <FilterPills options={TABS} value={tab} onChange={(t) => setTab(t as Tab)} />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+        <FilterSelect
+          label="Exibir"
+          options={TABS}
+          value={tab}
+          onChange={(t) => setTab(t as Tab)}
+        />
       </div>
 
       {tab === "Consultas" && <ConsultasWeek doctorId={doctorId} />}

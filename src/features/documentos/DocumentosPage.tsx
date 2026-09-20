@@ -6,7 +6,7 @@ import * as appointmentsApi from "@/lib/api/appointments";
 import * as docsApi from "@/lib/api/medicalDocuments";
 import type { MedicalDocument, MedicalDocumentType } from "@/lib/api/medicalDocuments";
 import { PageTitle, Card, Chip } from "@/app/ui";
-import { FilterPills } from "@/features/agenda/FilterPills";
+import { FilterSelect } from "@/app/FilterSelect";
 import { ErrorBox } from "@/features/consultas/ConsultasPage";
 import { DocumentDetailModal } from "./DocumentDetailModal";
 import {
@@ -56,16 +56,16 @@ export function DocumentosPage() {
     <div style={{ animation: "up .25s ease-out" }}>
       <PageTitle title="Documentos" subtitle="Receitas, atestados e pedidos emitidos por você." />
 
-      <div style={{ display: "grid", gap: 10, marginBottom: 18 }}>
-        <FilterPills
-          size={36}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
+        <FilterSelect
+          label="Tipo"
           options={["Todos", ...DOCUMENT_TYPES]}
           value={typeFilter}
           onChange={(v) => setTypeFilter(v as typeof typeFilter)}
           labelOf={(v) => (v === "Todos" ? "Todos" : docTypeLabel(v as MedicalDocumentType))}
         />
-        <FilterPills
-          size={36}
+        <FilterSelect
+          label="Status"
           options={STATUS_FILTERS as unknown as string[]}
           value={statusFilter}
           onChange={(v) => setStatusFilter(v as typeof statusFilter)}

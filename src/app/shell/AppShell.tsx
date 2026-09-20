@@ -364,7 +364,9 @@ export function AppShell() {
           )}
         </header>
 
-        <main style={{ padding: mainPad, maxWidth: 1280, margin: "0 auto" }}>
+        {/* Conteúdo fluido: usa toda a largura ao lado do sidebar, mantendo só o
+            gutter (padding). As páginas internas organizam o espaço em grids. */}
+        <main style={{ padding: mainPad }}>
           <Outlet />
         </main>
       </div>

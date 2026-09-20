@@ -13,7 +13,7 @@ import {
 import { patientDisplayInitials, patientDisplayName } from "@/lib/format/patient";
 import { dateBR, isoDateLocal, isoDate, timeLocal, today0 } from "@/lib/format/datetime";
 import { PageTitle, Card, Chip } from "@/app/ui";
-import { FilterPills } from "@/features/agenda/FilterPills";
+import { FilterSelect } from "@/app/FilterSelect";
 import { AppointmentDetailModal } from "./AppointmentDetailModal";
 import { color, radius } from "@/theme/tokens";
 
@@ -41,8 +41,13 @@ export function ConsultasPage() {
         subtitle="Todos os atendimentos e seus status de confirmação."
       />
 
-      <div style={{ marginBottom: 18 }}>
-        <FilterPills options={FILTERS} value={filter} onChange={(f) => setFilter(f as Filter)} />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
+        <FilterSelect
+          label="Status"
+          options={FILTERS}
+          value={filter}
+          onChange={(f) => setFilter(f as Filter)}
+        />
       </div>
 
       {appts.loading && <SkeletonRows />}

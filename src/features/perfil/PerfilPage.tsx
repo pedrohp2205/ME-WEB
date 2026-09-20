@@ -29,7 +29,8 @@ export function PerfilPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const width = useWindowWidth();
-  const twoCol = width >= 768 ? "repeat(2,minmax(0,1fr))" : "1fr";
+  // auto-fit: os campos se adaptam à largura REAL do card (não da janela).
+  const twoCol = width >= 768 ? "repeat(auto-fit,minmax(220px,1fr))" : "1fr";
 
   const [address, setAddress] = useState(doctor?.professionalAddress ?? "");
   const [phone, setPhone] = useState(doctor?.phoneNumber ?? "");
@@ -82,8 +83,18 @@ export function PerfilPage() {
   }
 
   return (
-    <div style={{ animation: "up .25s ease-out", display: "grid", gap: 16, maxWidth: 860 }}>
-      <PageTitle title="Perfil" subtitle="Seus dados profissionais e de emitente." />
+    <div
+      style={{
+        animation: "up .25s ease-out",
+        display: "grid",
+        gap: 16,
+        gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+        alignItems: "start",
+      }}
+    >
+      <div style={{ gridColumn: "1 / -1" }}>
+        <PageTitle title="Perfil" subtitle="Seus dados profissionais e de emitente." />
+      </div>
 
       {/* Dados do médico (definidos no cadastro; somente leitura) */}
       <Card>
@@ -169,7 +180,7 @@ export function PerfilPage() {
       <TwoFactorSection />
 
       {/* Ações */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+      <div style={{ gridColumn: "1 / -1", display: "flex", flexWrap: "wrap", gap: 10 }}>
         <GhostButton onClick={() => navigate("/verificar")}>Verificação pública</GhostButton>
         <button
           onClick={() => void logout()}
