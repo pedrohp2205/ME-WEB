@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { color, shadow } from "@/theme/tokens";
+import { Icon } from "@/app/icons";
 
 /**
  * Dropdown de filtro com o visual da marca: gatilho coral com degradê e uma
@@ -189,42 +190,23 @@ export function FilterSelect({
 
 function Chevron({ open }: { open: boolean }) {
   return (
-    <svg
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <span
       style={{
+        display: "inline-flex",
         flex: "none",
         transition: "transform .2s ease",
         transform: open ? "rotate(180deg)" : "none",
       }}
-      aria-hidden
     >
-      <path d="M6 9l6 6 6-6" />
-    </svg>
+      <Icon name="chevronDown" size={16} />
+    </span>
   );
 }
 
 function Check() {
   return (
-    <svg
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2.2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{ flex: "none" }}
-      aria-hidden
-    >
-      <path d="M5 12.5l4.5 4.5L19 7" />
-    </svg>
+    <span style={{ display: "inline-flex", flex: "none" }}>
+      <Icon name="check" size={16} />
+    </span>
   );
 }

@@ -6,6 +6,7 @@ import type { MedicalDocumentType } from "@/lib/api/medicalDocuments";
 import { patientCode } from "@/lib/format/patient";
 import { dateBR, ymdToBR } from "@/lib/format/datetime";
 import { Toggle } from "@/app/ui";
+import { Icon } from "@/app/icons";
 import { color } from "@/theme/tokens";
 import {
   blankExamItem,
@@ -225,7 +226,8 @@ const iconBtn: CSSProperties = {
   background: "#fff",
   color: color.textMuted,
   cursor: "pointer",
-  fontSize: 12,
+  display: "grid",
+  placeItems: "center",
   lineHeight: 1,
 };
 
@@ -240,9 +242,15 @@ function move<T>(arr: T[], i: number, dir: -1 | 1): T[] {
 function RowTools({ onUp, onDown, onDel }: { onUp: () => void; onDown: () => void; onDel: () => void }) {
   return (
     <div style={{ display: "flex", gap: 4, flex: "none" }}>
-      <button onClick={onUp} aria-label="Subir" style={iconBtn}>↑</button>
-      <button onClick={onDown} aria-label="Descer" style={iconBtn}>↓</button>
-      <button onClick={onDel} aria-label="Remover" style={{ ...iconBtn, color: color.danger }}>×</button>
+      <button onClick={onUp} aria-label="Subir" style={iconBtn}>
+        <Icon name="chevronUp" size={16} />
+      </button>
+      <button onClick={onDown} aria-label="Descer" style={iconBtn}>
+        <Icon name="chevronDown" size={16} />
+      </button>
+      <button onClick={onDel} aria-label="Remover" style={{ ...iconBtn, color: color.danger }}>
+        <Icon name="trash" size={16} />
+      </button>
     </div>
   );
 }

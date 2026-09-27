@@ -28,6 +28,22 @@ export function logout(refreshToken: string): Promise<void> {
   return api.post<void>("/auth/logout", { refreshToken }, { auth: false });
 }
 
+// ---- Recuperação de senha (pública) ----
+
+/** Pede o e-mail de redefinição. Responde 204 SEMPRE (não revela se o e-mail existe). */
+export function requestPasswordReset(email: string): Promise<void> {
+  return api.post<void>("/auth/password-reset/request", { email }, { auth: false });
+}
+
+/** Redefine a senha a partir do token recebido por e-mail. Responde 204. */
+export function confirmPasswordReset(token: string, password: string): Promise<void> {
+  return api.post<void>(
+    "/auth/password-reset/confirm",
+    { token, password },
+    { auth: false },
+  );
+}
+
 // ---- 2FA (requer autenticação) ----
 export interface TwoFactorSetupResponse {
   secret: string;
@@ -44,12 +60,4 @@ export function activateTwoFactor(code: string): Promise<void> {
 
 export function disableTwoFactor(code: string): Promise<void> {
   return api.post<void>("/auth/2fa/disable", { code });
-}
-
-/** Criação pública da conta do médico. */
-export function createDoctorUser(
-  email: string,
-  password: string,
-): Promise<unknown> {
-  return api.post("/users", { email, password, role: "DOCTOR" }, { auth: false });
 }

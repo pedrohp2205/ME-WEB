@@ -21,6 +21,7 @@ import { ConsultaDocuments } from "@/features/documentos/ConsultaDocuments";
 import { SoapCard } from "./SoapCard";
 import { EntrarNaSalaButton } from "@/features/teleconsulta/EntrarNaSalaButton";
 import { color, radius } from "@/theme/tokens";
+import { Icon } from "@/app/icons";
 
 export function ConsultaDetailPage() {
   const { id = "" } = useParams();
@@ -195,6 +196,9 @@ function BackLink({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       style={{
         justifySelf: "start",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
         border: "none",
         background: "none",
         color: color.textMuted,
@@ -203,7 +207,8 @@ function BackLink({ onClick }: { onClick: () => void }) {
         padding: "4px 0",
       }}
     >
-      ← Voltar para consultas
+      <Icon name="arrowLeft" size={16} />
+      Voltar para consultas
     </button>
   );
 }

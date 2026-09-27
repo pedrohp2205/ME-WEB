@@ -21,7 +21,7 @@ const codeInputStyle = {
   maxWidth: 220,
 };
 
-export function TwoFactorSection() {
+export function TwoFactorSection({ embedded = false }: { embedded?: boolean } = {}) {
   const { toast } = useToast();
   const [mode, setMode] = useState<Mode>("idle");
   const [setup, setSetup] = useState<TwoFactorSetupResponse | null>(null);
@@ -82,8 +82,8 @@ export function TwoFactorSection() {
     }
   }
 
-  return (
-    <Card>
+  const inner = (
+    <>
       <SectionTitle>Segurança · verificação em duas etapas</SectionTitle>
 
       {mode === "idle" && (
@@ -183,6 +183,8 @@ export function TwoFactorSection() {
           </div>
         </div>
       )}
-    </Card>
+    </>
   );
+
+  return embedded ? inner : <Card>{inner}</Card>;
 }

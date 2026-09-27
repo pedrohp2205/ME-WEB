@@ -256,7 +256,8 @@ export function AppShell() {
                 marginTop: 2,
               }}
             >
-              {doctor?.crm ?? "Médico"}
+              {`${doctor?.council ?? ""} ${doctor?.councilNumber ?? doctor?.crm ?? ""}`.trim() ||
+                "Profissional"}
             </span>
           </span>
         </button>
@@ -424,7 +425,7 @@ export function AppShell() {
                   justifyContent: "center",
                 }}
               >
-                <CloseGlyph />
+                <Icon name="close" size={18} />
               </button>
             </div>
             <div style={{ flex: 1, minHeight: 80, overflowY: "auto" }}>
@@ -603,20 +604,3 @@ function NotificationsEmpty() {
   );
 }
 
-/** X simples (não existe no set de ícones; usado só no header do sheet). */
-function CloseGlyph() {
-  return (
-    <svg
-      width={18}
-      height={18}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M6 6l12 12M18 6L6 18" />
-    </svg>
-  );
-}

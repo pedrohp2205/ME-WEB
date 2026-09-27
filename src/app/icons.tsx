@@ -1,31 +1,112 @@
-// Ícones — paths idênticos aos do protótipo (renderVals.icon).
-const PATHS: Record<string, string> = {
-  home: "M3 10.5 12 3.5l9 7M5.5 9.5V20h13V9.5",
-  cal: "M4 6.5h16V20H4zM8 3.5v4M16 3.5v4M4 11h16",
-  clip: "M9 3.5h6v3H9zM6.5 6.5h11v14h-11z M9.5 11h5M9.5 15h5",
-  doc: "M7 3.5h7l3.5 3.5V20.5H7zM14 3.5v4h3.5",
-  layers: "M12 3.5 3.5 8 12 12.5 20.5 8zM3.5 13.5 12 18l8.5-4.5",
-  key: "M14.5 9.5a3 3 0 1 0-6 0 3 3 0 0 0 6 0M11.5 12.5V21M11.5 18h3.5",
-  user: "M12 11.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4.5 21a7.5 7.5 0 0 1 15 0",
-  bell: "M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10M10 19a2 2 0 0 0 4 0",
-  menu: "M4 7h16M4 12h16M4 17h16",
+// Ícones do painel — agora via Heroicons v2 (outline, traço fino), mantendo a API
+// pública <Icon name="..." size={n} />. currentColor herda a cor; width/height = size.
+import type { ComponentType, SVGProps } from "react";
+
+// Outline (padrão) — traço fino, combina com o visual atual.
+import {
+  HomeIcon,
+  CalendarDaysIcon,
+  ClipboardDocumentListIcon,
+  DocumentTextIcon,
+  RectangleStackIcon,
+  KeyIcon,
+  UserIcon,
+  BellIcon,
+  Bars3Icon,
+  PencilSquareIcon,
+  CheckIcon,
+  XMarkIcon,
+  StarIcon,
+  ComputerDesktopIcon,
+  MagnifyingGlassIcon,
+  ShieldCheckIcon,
+  TrashIcon,
+  ArrowRightOnRectangleIcon,
+  DocumentCheckIcon,
+  ArrowLeftIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/24/outline";
+
+// Sólido — usado sob demanda (ex.: estrela cheia nas avaliações).
+import {
+  HomeIcon as HomeSolid,
+  CalendarDaysIcon as CalendarDaysSolid,
+  ClipboardDocumentListIcon as ClipboardDocumentListSolid,
+  DocumentTextIcon as DocumentTextSolid,
+  RectangleStackIcon as RectangleStackSolid,
+  KeyIcon as KeySolid,
+  UserIcon as UserSolid,
+  BellIcon as BellSolid,
+  Bars3Icon as Bars3Solid,
+  PencilSquareIcon as PencilSquareSolid,
+  CheckIcon as CheckSolid,
+  XMarkIcon as XMarkSolid,
+  StarIcon as StarSolid,
+  ComputerDesktopIcon as ComputerDesktopSolid,
+  MagnifyingGlassIcon as MagnifyingGlassSolid,
+  ShieldCheckIcon as ShieldCheckSolid,
+  TrashIcon as TrashSolid,
+  ArrowRightOnRectangleIcon as ArrowRightOnRectangleSolid,
+  DocumentCheckIcon as DocumentCheckSolid,
+  ArrowLeftIcon as ArrowLeftSolid,
+  ChevronUpIcon as ChevronUpSolid,
+  ChevronDownIcon as ChevronDownSolid,
+} from "@heroicons/react/24/solid";
+
+type HeroIcon = ComponentType<SVGProps<SVGSVGElement> & { title?: string }>;
+
+// Mapa nome -> [outline, solid]. Todos os nomes conferidos na v2.2.0.
+const ICONS: Record<string, [HeroIcon, HeroIcon]> = {
+  // navegação / topbar (nomes legados — mantêm os call sites atuais)
+  home: [HomeIcon, HomeSolid],
+  cal: [CalendarDaysIcon, CalendarDaysSolid],
+  clip: [ClipboardDocumentListIcon, ClipboardDocumentListSolid],
+  doc: [DocumentTextIcon, DocumentTextSolid],
+  layers: [RectangleStackIcon, RectangleStackSolid],
+  key: [KeyIcon, KeySolid],
+  user: [UserIcon, UserSolid],
+  bell: [BellIcon, BellSolid],
+  menu: [Bars3Icon, Bars3Solid],
+  // novos (perfil e afins)
+  pencil: [PencilSquareIcon, PencilSquareSolid],
+  check: [CheckIcon, CheckSolid],
+  close: [XMarkIcon, XMarkSolid],
+  star: [StarIcon, StarSolid],
+  device: [ComputerDesktopIcon, ComputerDesktopSolid],
+  search: [MagnifyingGlassIcon, MagnifyingGlassSolid],
+  shield: [ShieldCheckIcon, ShieldCheckSolid],
+  trash: [TrashIcon, TrashSolid],
+  logout: [ArrowRightOnRectangleIcon, ArrowRightOnRectangleSolid],
+  certificate: [DocumentCheckIcon, DocumentCheckSolid],
+  // utilitários de navegação/ordenação
+  arrowLeft: [ArrowLeftIcon, ArrowLeftSolid],
+  chevronUp: [ChevronUpIcon, ChevronUpSolid],
+  chevronDown: [ChevronDownIcon, ChevronDownSolid],
 };
 
-export type IconName = keyof typeof PATHS;
+export type IconName = keyof typeof ICONS;
 
-export function Icon({ name, size = 19 }: { name: IconName; size?: number }) {
+export function Icon({
+  name,
+  size = 19,
+  variant = "outline",
+}: {
+  name: IconName;
+  size?: number;
+  variant?: "outline" | "solid";
+}) {
+  const [outline, solid] = ICONS[name];
+  const Cmp = variant === "solid" ? solid : outline;
+  // Heroicons outline usam strokeWidth 1.5; subimos um pouco (1.7) para ficar
+  // próximo do traço anterior. currentColor é herdado do elemento pai.
   return (
-    <svg
+    <Cmp
       width={size}
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.7}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d={PATHS[name]} />
-    </svg>
+      aria-hidden="true"
+      focusable="false"
+      {...(variant === "outline" ? { strokeWidth: 1.7 } : {})}
+    />
   );
 }

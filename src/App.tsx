@@ -7,9 +7,12 @@ import { PublicOnly } from "@/routes/PublicOnly";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { CadastroPage } from "@/features/auth/CadastroPage";
 import { CredenciamentoPage } from "@/features/auth/CredenciamentoPage";
+import { EsqueciSenhaPage } from "@/features/auth/EsqueciSenhaPage";
+import { RedefinirSenhaPage } from "@/features/auth/RedefinirSenhaPage";
 import { VerifyPage } from "@/features/public/VerifyPage";
 import { OAuthRedirect } from "@/pages/OAuthRedirect";
 import { SignatureCallback } from "@/pages/SignatureCallback";
+import { CertificateCallback } from "@/pages/CertificateCallback";
 import { AppShell } from "@/app/shell/AppShell";
 import { ComingSoon } from "@/app/shell/ComingSoon";
 import { PerfilPage } from "@/features/perfil/PerfilPage";
@@ -43,8 +46,13 @@ export default function App() {
               }
             />
             <Route path="/verificar" element={<VerifyPage />} />
+            {/* Recuperação de senha — públicas (o link vem por e-mail; funcionam
+                mesmo com sessão em outra aba, por isso sem PublicOnly). */}
+            <Route path="/esqueci-senha" element={<EsqueciSenhaPage />} />
+            <Route path="/redefinir-senha" element={<RedefinirSenhaPage />} />
             <Route path="/oauth2/redirect" element={<OAuthRedirect />} />
             <Route path="/document-signature/callback" element={<SignatureCallback />} />
+            <Route path="/certificado/callback" element={<CertificateCallback />} />
 
             {/* Autenticado, mas ainda sem credenciamento (análise / 2FA) */}
             <Route

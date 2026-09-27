@@ -257,12 +257,20 @@ export function LoginPage() {
                   marginTop: 22,
                 }}
               >
-                <span
-                  title="Recuperação de senha ainda não disponível no servidor."
-                  style={{ fontSize: 12, color: color.textFaint, cursor: "not-allowed" }}
+                <button
+                  onClick={() => navigate("/esqueci-senha")}
+                  style={{
+                    border: "none",
+                    background: "none",
+                    color: color.textMuted,
+                    fontSize: 12,
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    padding: "4px 0",
+                  }}
                 >
                   Esqueci minha senha
-                </span>
+                </button>
                 <button
                   onClick={() => navigate("/verificar")}
                   style={{

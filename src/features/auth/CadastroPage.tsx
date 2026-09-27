@@ -5,6 +5,7 @@ import { ApiError } from "@/lib/api/errors";
 import { useWindowWidth } from "@/lib/useWindowWidth";
 import { MeBrand } from "@/app/MeLogo";
 import { Field, GhostButton, PrimaryButton, Select, TextInput } from "@/app/ui";
+import { Icon } from "@/app/icons";
 import { color, radius } from "@/theme/tokens";
 
 const STEP_LABELS = ["Dados pessoais", "Registro profissional", "Acesso"];
@@ -476,7 +477,7 @@ function Stepper({ step }: { step: number }) {
                 fontWeight: 600,
               }}
             >
-              {done ? "✓" : n}
+              {done ? <Icon name="check" size={13} /> : n}
             </span>
             <span
               style={{
@@ -521,7 +522,11 @@ function RegrasDeSenha({ value }: { value: string }) {
               color: ok ? color.teal : color.textFaint,
             }}
           >
-            <span style={{ width: 12, textAlign: "center" }}>{ok ? "✓" : "•"}</span>
+            <span
+              style={{ width: 12, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+            >
+              {ok ? <Icon name="check" size={12} /> : "•"}
+            </span>
             {r.label}
           </div>
         );

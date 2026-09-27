@@ -101,14 +101,22 @@ async function rawFetch(
   accessToken: string | null,
 ): Promise<Response> {
   const headers: Record<string, string> = {};
-  if (opts.body !== undefined) headers["Content-Type"] = "application/json";
+  // FormData (upload multipart): NÃO definir Content-Type — o browser injeta o
+  // boundary. Para o resto, JSON.
+  const isForm = typeof FormData !== "undefined" && opts.body instanceof FormData;
+  if (opts.body !== undefined && !isForm) headers["Content-Type"] = "application/json";
   if (opts.auth !== false && accessToken) {
     headers["Authorization"] = `Bearer ${accessToken}`;
   }
   return fetch(buildUrl(path, opts.query), {
     method,
     headers,
-    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+    body:
+      opts.body === undefined
+        ? undefined
+        : isForm
+          ? (opts.body as FormData)
+          : JSON.stringify(opts.body),
     signal: opts.signal,
   });
 }

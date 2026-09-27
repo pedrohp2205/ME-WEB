@@ -2,6 +2,13 @@
 // usado nas rotas de agenda/consulta.
 import { api } from "./http";
 
+export interface SpecialtyRef {
+  id: string;
+  slug: string;
+  name: string;
+  profession?: string;
+}
+
 export interface DoctorResponse {
   id: string;
   userId: string;
@@ -12,10 +19,36 @@ export interface DoctorResponse {
   consultationPriceCents: number | null;
   professionalAddress: string | null;
   phoneNumber: string | null;
+  // Novos (opcionais para não quebrar chamadas existentes).
+  profession?: string;
+  /** Rótulo do conselho da profissão (ex.: "CRM", "CRN", "CRP", "CREFITO", "CREF"). */
+  council?: string;
+  councilNumber?: string;
+  councilUf?: string;
+  specialties?: SpecialtyRef[];
 }
 
 export function getMe(): Promise<DoctorResponse> {
   return api.get<DoctorResponse>("/doctors/me");
+}
+
+// ---- Especialidades ----
+
+export interface Specialty {
+  id: string;
+  slug: string;
+  name: string;
+  profession: string;
+}
+
+/** Especialidades ATIVAS de uma profissão (default MEDICINE). */
+export function listSpecialties(profession: string): Promise<Specialty[]> {
+  return api.get<Specialty[]>("/specialties", { query: { profession } });
+}
+
+/** Atualiza as especialidades do profissional (máx. 5). Retorna o perfil. */
+export function updateSpecialties(specialtyIds: string[]): Promise<DoctorResponse> {
+  return api.put<DoctorResponse>("/doctors/me/specialties", { specialtyIds });
 }
 
 export interface CreateDoctorRequest {
@@ -87,6 +120,38 @@ export interface CredentialingResponse {
 
 export function getCredentialing(): Promise<CredentialingResponse> {
   return api.get<CredentialingResponse>("/doctors/me/credentialing");
+}
+
+// ---- Certificado digital (ICP-Brasil / VIDaaS) ----
+
+export type CertificateStatus = "PENDING" | "LINKED" | "FAILED" | "REVOKED";
+
+export interface CertificateInfo {
+  id: string;
+  status: CertificateStatus;
+  provider: string;
+  subject: string | null;
+  notAfter: string | null;
+  linkedAt: string | null;
+}
+
+export interface CertificateAuthorization {
+  id: string;
+  /** Preenchida em produção (VIDaaS): redirecionar o navegador para ela.
+   *  Nula em DEV (mock): o vínculo já é concluído no servidor. */
+  authorizationUrl: string | null;
+  expiresAt: string;
+}
+
+/** Certificado do profissional. 204 (sem conteúdo) vira null. */
+export async function getCertificate(): Promise<CertificateInfo | null> {
+  const r = await api.get<CertificateInfo | null>("/doctors/me/certificate");
+  return r ?? null;
+}
+
+/** Inicia a autorização do certificado (VIDaaS em prod; mock em dev). */
+export function startCertificateAuthorization(): Promise<CertificateAuthorization> {
+  return api.post<CertificateAuthorization>("/doctors/me/certificate/authorization");
 }
 
 // ---- Auto-cadastro (público) ----
