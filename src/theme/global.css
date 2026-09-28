@@ -1,9 +1,108 @@
-/* Global — extraído do <helmet> do protótipo. Mantém a identidade visual. */
+/* Global — identidade visual do painel. As cores agora são custom properties
+   que trocam por tema (claro/escuro). Os tokens em src/theme/tokens.ts apenas
+   apontam para estas variáveis, então nenhum call site precisa mudar. */
+
+:root {
+  /* superfícies */
+  --color-appBg: #fffdfb;
+  --color-surface: #ffffff;
+  --color-muted: #fbf6f3;
+  --color-mutedAlt: #f4ede9;
+  --color-border: #efe8e3;
+
+  /* texto */
+  --color-text: #211e1c;
+  --color-textMuted: #79716b;
+  --color-textFaint: #b7ada6;
+
+  /* primária (coral) — mantida em ambos os temas */
+  --color-primary: #eb5057;
+  --color-primaryHover: #c23a45;
+  --color-primaryGradient: linear-gradient(135deg, #eb5057, #f7826e);
+  --color-primarySoft: #ffecea;
+  --color-primarySoftBorder: #f8d7d3;
+
+  /* teal / sucesso */
+  --color-teal: #0e7e70;
+  --color-tealAlt: #1ea896;
+  --color-tealSoft: #e5f4f0;
+  --color-tealSoftBorder: #c7e5dd;
+
+  /* atenção */
+  --color-warn: #b45309;
+  --color-warnAlt: #f59e0b;
+  --color-warnSoft: #fef6e7;
+  --color-warnSoftBorder: #f6e1bc;
+
+  /* perigo */
+  --color-danger: #dc2626;
+  --color-dangerSoft: #feecec;
+
+  /* botões escuros fortes */
+  --color-ink: #211e1c;
+  --color-inkHover: #3a3532;
+
+  /* sombras */
+  --shadow-card: 0 8px 24px rgba(33, 30, 28, 0.08);
+  --shadow-cardHover: 0 14px 30px rgba(33, 30, 28, 0.1);
+  --shadow-modal: 0 8px 24px rgba(33, 30, 28, 0.24);
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  /* superfícies — fundo escuro quente; surface um pouco acima do fundo */
+  --color-appBg: #1a1613;
+  --color-surface: #221e1b;
+  --color-muted: #2a2421;
+  --color-mutedAlt: #332c28;
+  --color-border: #39302b;
+
+  /* texto claro */
+  --color-text: #f3ede8;
+  --color-textMuted: #a79e97;
+  --color-textFaint: #70665f;
+
+  /* primária coral preservada; hover clareia para aparecer no escuro */
+  --color-primary: #eb5057;
+  --color-primaryHover: #f5727a;
+  --color-primaryGradient: linear-gradient(135deg, #eb5057, #f7826e);
+  --color-primarySoft: rgba(235, 80, 87, 0.16);
+  --color-primarySoftBorder: rgba(235, 80, 87, 0.34);
+
+  /* teal — clareia para leitura no escuro */
+  --color-teal: #34c0ac;
+  --color-tealAlt: #1ea896;
+  --color-tealSoft: rgba(30, 168, 150, 0.16);
+  --color-tealSoftBorder: rgba(30, 168, 150, 0.34);
+
+  /* atenção */
+  --color-warn: #f0b45c;
+  --color-warnAlt: #f59e0b;
+  --color-warnSoft: rgba(245, 158, 11, 0.15);
+  --color-warnSoftBorder: rgba(245, 158, 11, 0.34);
+
+  /* perigo */
+  --color-danger: #f0736f;
+  --color-dangerSoft: rgba(240, 115, 111, 0.16);
+
+  /* ink continua escuro (fica acima do surface) para pílulas com texto claro */
+  --color-ink: #35302c;
+  --color-inkHover: #423b36;
+
+  /* sombras mais sutis/profundas no escuro */
+  --shadow-card: 0 6px 20px rgba(0, 0, 0, 0.3);
+  --shadow-cardHover: 0 12px 28px rgba(0, 0, 0, 0.42);
+  --shadow-modal: 0 14px 36px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
+}
+
 html,
 body {
   margin: 0;
   padding: 0;
-  background: #fffdfb;
+  background: var(--color-appBg);
 }
 * {
   box-sizing: border-box;
@@ -12,11 +111,11 @@ body {
   min-height: 100vh;
 }
 a {
-  color: #eb5057;
+  color: var(--color-primary);
   text-decoration: none;
 }
 a:hover {
-  color: #c23a45;
+  color: var(--color-primaryHover);
 }
 input,
 textarea,
@@ -25,11 +124,32 @@ button {
   font-family: Poppins, sans-serif;
 }
 :focus-visible {
-  outline: 2px solid #eb5057;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 ::placeholder {
-  color: #b7ada6;
+  color: var(--color-textFaint);
+}
+
+/* Barras de rolagem finas e discretas — vale para toda a app (inclusive os
+   scrolls internos das seções). Acompanha o tema via tokens. */
+* {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--color-textFaint) transparent;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-textFaint);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-textMuted);
 }
 @keyframes sh {
   0% {

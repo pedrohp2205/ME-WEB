@@ -26,6 +26,8 @@ import {
   ArrowLeftIcon,
   ChevronUpIcon,
   ChevronDownIcon,
+  SunIcon,
+  MoonIcon,
 } from "@heroicons/react/24/outline";
 
 // Sólido — usado sob demanda (ex.: estrela cheia nas avaliações).
@@ -52,6 +54,8 @@ import {
   ArrowLeftIcon as ArrowLeftSolid,
   ChevronUpIcon as ChevronUpSolid,
   ChevronDownIcon as ChevronDownSolid,
+  SunIcon as SunSolid,
+  MoonIcon as MoonSolid,
 } from "@heroicons/react/24/solid";
 
 type HeroIcon = ComponentType<SVGProps<SVGSVGElement> & { title?: string }>;
@@ -83,6 +87,8 @@ const ICONS: Record<string, [HeroIcon, HeroIcon]> = {
   arrowLeft: [ArrowLeftIcon, ArrowLeftSolid],
   chevronUp: [ChevronUpIcon, ChevronUpSolid],
   chevronDown: [ChevronDownIcon, ChevronDownSolid],
+  sun: [SunIcon, SunSolid],
+  moon: [MoonIcon, MoonSolid],
 };
 
 export type IconName = keyof typeof ICONS;

@@ -163,22 +163,37 @@ function AppointmentRow({
   );
 }
 
-function SkeletonRows() {
+export function SkeletonRows({ rows = 4 }: { rows?: number }) {
   return (
     <div style={{ display: "grid", gap: 12 }}>
-      {[0, 1, 2, 3].map((i) => (
+      {Array.from({ length: rows }, (_, i) => (
         <div
           key={i}
           style={{
             height: 70,
             borderRadius: radius.card,
-            background: "linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9)",
+            background: `linear-gradient(90deg, ${color.mutedAlt}, ${color.muted}, ${color.mutedAlt})`,
             backgroundSize: "200% 100%",
             animation: "sh 1.2s infinite",
           }}
         />
       ))}
     </div>
+  );
+}
+
+/** Bloco único de shimmer (para cabeçalhos/áreas grandes), com os tokens do tema. */
+export function SkeletonBlock({ height }: { height: number }) {
+  return (
+    <div
+      style={{
+        height,
+        borderRadius: radius.card,
+        background: `linear-gradient(90deg, ${color.mutedAlt}, ${color.muted}, ${color.mutedAlt})`,
+        backgroundSize: "200% 100%",
+        animation: "sh 1.2s infinite",
+      }}
+    />
   );
 }
 

@@ -1,45 +1,48 @@
-// Design tokens — fonte da verdade extraída do protótipo "Painel do Medico ME.dc.html".
-// NÃO redesenhe: estes valores são o visual aprovado. Reuse-os em todos os componentes.
+// Design tokens — fonte da verdade do visual do painel. As CORES agora apontam
+// para custom properties CSS (definidas em src/theme/global.css) que trocam por
+// tema claro/escuro. Os nomes de chave são os mesmos de antes, então os call
+// sites (color.surface, color.primary, …) continuam funcionando sem mudança.
+// radius/shadow/font seguem iguais em estrutura (shadow também troca por tema).
 
 export const color = {
   // superfícies
-  appBg: "#FFFDFB",
-  surface: "#FFFFFF",
-  muted: "#FBF6F3",
-  mutedAlt: "#F4EDE9",
-  border: "#EFE8E3",
+  appBg: "var(--color-appBg)",
+  surface: "var(--color-surface)",
+  muted: "var(--color-muted)",
+  mutedAlt: "var(--color-mutedAlt)",
+  border: "var(--color-border)",
 
   // texto
-  text: "#211E1C",
-  textMuted: "#79716B",
-  textFaint: "#B7ADA6",
+  text: "var(--color-text)",
+  textMuted: "var(--color-textMuted)",
+  textFaint: "var(--color-textFaint)",
 
-  // primária (coral/vermelho)
-  primary: "#EB5057",
-  primaryHover: "#C23A45",
-  primaryGradient: "linear-gradient(135deg,#EB5057,#F7826E)",
-  primarySoft: "#FFECEA",
-  primarySoftBorder: "#F8D7D3",
+  // primária (coral/vermelho) — preservada em ambos os temas
+  primary: "var(--color-primary)",
+  primaryHover: "var(--color-primaryHover)",
+  primaryGradient: "var(--color-primaryGradient)",
+  primarySoft: "var(--color-primarySoft)",
+  primarySoftBorder: "var(--color-primarySoftBorder)",
 
   // teal / sucesso
-  teal: "#0E7E70",
-  tealAlt: "#1EA896",
-  tealSoft: "#E5F4F0",
-  tealSoftBorder: "#C7E5DD",
+  teal: "var(--color-teal)",
+  tealAlt: "var(--color-tealAlt)",
+  tealSoft: "var(--color-tealSoft)",
+  tealSoftBorder: "var(--color-tealSoftBorder)",
 
   // atenção / warning
-  warn: "#B45309",
-  warnAlt: "#F59E0B",
-  warnSoft: "#FEF6E7",
-  warnSoftBorder: "#F6E1BC",
+  warn: "var(--color-warn)",
+  warnAlt: "var(--color-warnAlt)",
+  warnSoft: "var(--color-warnSoft)",
+  warnSoftBorder: "var(--color-warnSoftBorder)",
 
   // perigo
-  danger: "#DC2626",
-  dangerSoft: "#FEECEC",
+  danger: "var(--color-danger)",
+  dangerSoft: "var(--color-dangerSoft)",
 
   // escuro (botões secundários fortes)
-  ink: "#211E1C",
-  inkHover: "#3A3532",
+  ink: "var(--color-ink)",
+  inkHover: "var(--color-inkHover)",
 } as const;
 
 export const radius = {
@@ -50,9 +53,9 @@ export const radius = {
 } as const;
 
 export const shadow = {
-  card: "0 8px 24px rgba(33,30,28,0.08)",
-  cardHover: "0 14px 30px rgba(33,30,28,0.1)",
-  modal: "0 8px 24px rgba(33,30,28,0.24)",
+  card: "var(--shadow-card)",
+  cardHover: "var(--shadow-cardHover)",
+  modal: "var(--shadow-modal)",
 } as const;
 
 export const font = {

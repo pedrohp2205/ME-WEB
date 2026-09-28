@@ -27,8 +27,8 @@ import { FilterSelect } from "@/app/FilterSelect";
 import { HorariosTab } from "./HorariosTab";
 import { BloqueiosTab } from "./BloqueiosTab";
 import { AppointmentDetailModal } from "@/features/consultas/AppointmentDetailModal";
-import { ErrorBox } from "@/features/consultas/ConsultasPage";
-import { color, radius } from "@/theme/tokens";
+import { ErrorBox, SkeletonBlock } from "@/features/consultas/ConsultasPage";
+import { color, radius, shadow } from "@/theme/tokens";
 
 const TABS = ["Consultas", "Meus horários", "Bloqueios"] as const;
 type Tab = (typeof TABS)[number];
@@ -72,18 +72,7 @@ function ConsultasWeek({ doctorId }: { doctorId: string }) {
   const todayStr = isoDate(today0());
   const open = appts.data?.find((a) => a.id === openId) ?? null;
 
-  if (appts.loading)
-    return (
-      <div
-        style={{
-          height: 200,
-          borderRadius: radius.card,
-          background: "linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9)",
-          backgroundSize: "200% 100%",
-          animation: "sh 1.2s infinite",
-        }}
-      />
-    );
+  if (appts.loading) return <SkeletonBlock height={200} />;
   if (appts.error) return <ErrorBox message={appts.error} onRetry={appts.reload} />;
 
   const all = appts.data ?? [];
@@ -112,7 +101,7 @@ function ConsultasWeek({ doctorId }: { doctorId: string }) {
                 borderRadius: radius.card,
                 padding: 12,
                 minHeight: isMobile ? undefined : 120,
-                boxShadow: "0 8px 24px rgba(33,30,28,0.08)",
+                boxShadow: shadow.card,
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 8px 12px" }}>

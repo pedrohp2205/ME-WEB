@@ -1,5 +1,6 @@
 // Documentos médicos — /api/v1/medical-documents.
 import { api } from "./http";
+import * as appointmentsApi from "./appointments";
 
 export type MedicalDocumentType =
   | "RECEITA_SIMPLES"
@@ -109,6 +110,24 @@ export function listByAppointment(
   return api.get<MedicalDocument[]>(`/medical-documents/appointment/${appointmentId}`, {
     query: documentType ? { documentType } : undefined,
   });
+}
+
+/**
+ * Documentos emitidos por este profissional. O backend não expõe um endpoint
+ * "meus documentos" para o médico (o GET /medical-documents/me é do PACIENTE),
+ * então agregamos varrendo as consultas do médico e juntando os documentos de
+ * cada uma — mesmo padrão da tela de Documentos. Dados 100% reais.
+ */
+export async function listMine(
+  doctorId: string,
+  maxAppointments = 40,
+): Promise<MedicalDocument[]> {
+  const appts = await appointmentsApi.listByDoctor(doctorId);
+  const recent = [...appts]
+    .sort((a, b) => b.startDatetime.localeCompare(a.startDatetime))
+    .slice(0, maxAppointments);
+  const results = await Promise.allSettled(recent.map((a) => listByAppointment(a.id)));
+  return results.flatMap((r) => (r.status === "fulfilled" ? r.value : []));
 }
 
 export function getById(id: string): Promise<MedicalDocument> {

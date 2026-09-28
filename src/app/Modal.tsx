@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useWindowWidth } from "@/lib/useWindowWidth";
-import { color } from "@/theme/tokens";
+import { Icon } from "@/app/icons";
+import { color, shadow } from "@/theme/tokens";
 
 /** Modal responsivo — bottom-sheet no mobile, centralizado no desktop. */
 export function Modal({
@@ -46,7 +47,7 @@ export function Modal({
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          boxShadow: "0 8px 24px rgba(33,30,28,0.24)",
+          boxShadow: shadow.modal,
           animation: "up .22s ease-out",
         }}
       >
@@ -79,12 +80,13 @@ export function Modal({
               border: `1px solid ${color.border}`,
               borderRadius: 999,
               background: color.surface,
-              fontSize: 16,
               color: color.textMuted,
               cursor: "pointer",
+              display: "grid",
+              placeItems: "center",
             }}
           >
-            ×
+            <Icon name="close" size={18} />
           </button>
         </div>
 

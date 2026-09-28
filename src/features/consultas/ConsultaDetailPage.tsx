@@ -16,7 +16,7 @@ import { patientDisplayInitials, patientDisplayName } from "@/lib/format/patient
 import { dateBR, timeLocal } from "@/lib/format/datetime";
 import { useToast } from "@/app/Toast";
 import { Card, Chip, GhostButton, PrimaryButton } from "@/app/ui";
-import { ErrorBox } from "./ConsultasPage";
+import { ErrorBox, SkeletonBlock } from "./ConsultasPage";
 import { ConsultaDocuments } from "@/features/documentos/ConsultaDocuments";
 import { SoapCard } from "./SoapCard";
 import { EntrarNaSalaButton } from "@/features/teleconsulta/EntrarNaSalaButton";
@@ -51,18 +51,7 @@ export function ConsultaDetailPage() {
     }
   }
 
-  if (appt.loading)
-    return (
-      <div
-        style={{
-          height: 240,
-          borderRadius: radius.card,
-          background: "linear-gradient(90deg,#F4EDE9,#FBF6F3,#F4EDE9)",
-          backgroundSize: "200% 100%",
-          animation: "sh 1.2s infinite",
-        }}
-      />
-    );
+  if (appt.loading) return <SkeletonBlock height={240} />;
   if (appt.error || !appt.data)
     return (
       <div style={{ display: "grid", gap: 16 }}>

@@ -7,7 +7,7 @@ import { patientCode } from "@/lib/format/patient";
 import { dateBR, ymdToBR } from "@/lib/format/datetime";
 import { Toggle } from "@/app/ui";
 import { Icon } from "@/app/icons";
-import { color } from "@/theme/tokens";
+import { color, shadow } from "@/theme/tokens";
 import {
   blankExamItem,
   blankPrescItem,
@@ -50,10 +50,10 @@ export function DocumentSheet({
         style={{
           maxWidth: 720,
           margin: "0 auto",
-          background: "#fff",
+          background: color.surface,
           border: `1px solid ${color.border}`,
           borderRadius: 12,
-          boxShadow: "0 8px 24px rgba(33,30,28,0.08)",
+          boxShadow: shadow.card,
           padding: pad,
           color: color.text,
         }}
@@ -223,7 +223,7 @@ const iconBtn: CSSProperties = {
   height: 26,
   border: `1px solid ${color.border}`,
   borderRadius: 999,
-  background: "#fff",
+  background: color.surface,
   color: color.textMuted,
   cursor: "pointer",
   display: "grid",
@@ -260,7 +260,7 @@ const addBtn: CSSProperties = {
   padding: "0 14px",
   border: `1px dashed ${color.primary}`,
   borderRadius: 999,
-  background: "#fff",
+  background: color.surface,
   color: color.primary,
   fontSize: 12.5,
   fontWeight: 600,

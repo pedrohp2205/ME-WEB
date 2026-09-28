@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ThemeProvider } from "@/theme/ThemeContext";
 import { AuthProvider } from "@/lib/auth/AuthContext";
 import { ToastProvider } from "@/app/Toast";
 import { RequireDoctor } from "@/routes/RequireDoctor";
@@ -15,6 +16,7 @@ import { SignatureCallback } from "@/pages/SignatureCallback";
 import { CertificateCallback } from "@/pages/CertificateCallback";
 import { AppShell } from "@/app/shell/AppShell";
 import { ComingSoon } from "@/app/shell/ComingSoon";
+import { InicioPage } from "@/features/inicio/InicioPage";
 import { PerfilPage } from "@/features/perfil/PerfilPage";
 import { AgendaPage } from "@/features/agenda/AgendaPage";
 import { ConsultasPage } from "@/features/consultas/ConsultasPage";
@@ -24,9 +26,10 @@ import { DocumentosPage } from "@/features/documentos/DocumentosPage";
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <BrowserRouter>
+    <ThemeProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <BrowserRouter>
           <Routes>
             {/* Públicas */}
             <Route
@@ -74,7 +77,7 @@ export default function App() {
                 </RequireDoctor>
               }
             >
-              <Route path="/" element={<ComingSoon title="Início" part="Parte 3" />} />
+              <Route path="/" element={<InicioPage />} />
               <Route path="/agenda" element={<AgendaPage />} />
               <Route path="/consultas" element={<ConsultasPage />} />
               <Route path="/consultas/:id" element={<ConsultaDetailPage />} />
@@ -87,8 +90,9 @@ export default function App() {
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        </BrowserRouter>
-      </ToastProvider>
-    </AuthProvider>
+          </BrowserRouter>
+        </ToastProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

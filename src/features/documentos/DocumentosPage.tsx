@@ -7,7 +7,7 @@ import * as docsApi from "@/lib/api/medicalDocuments";
 import type { MedicalDocument, MedicalDocumentType } from "@/lib/api/medicalDocuments";
 import { PageTitle, Card, Chip } from "@/app/ui";
 import { FilterSelect } from "@/app/FilterSelect";
-import { ErrorBox } from "@/features/consultas/ConsultasPage";
+import { ErrorBox, SkeletonRows } from "@/features/consultas/ConsultasPage";
 import { DocumentDetailModal } from "./DocumentDetailModal";
 import {
   DOCUMENT_TYPES,
@@ -73,7 +73,7 @@ export function DocumentosPage() {
         />
       </div>
 
-      {data.loading && <div style={{ fontSize: 13, color: color.textMuted }}>Carregando documentos…</div>}
+      {data.loading && <SkeletonRows />}
       {data.error && <ErrorBox message={data.error} onRetry={data.reload} />}
 
       {!data.loading && !data.error && (
